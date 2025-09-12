@@ -1,0 +1,21 @@
+{
+  "name": "Fenix A320 Smart Checklist",
+  "short_name": "A320 Checklist",
+  "description": "Fenix A320 için interaktif akıllı checklist uygulaması",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#048CFC",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
