@@ -1,6 +1,6 @@
 {
-  "name": "A320 Smart Checklist",
-  "short_name": "A320 Checklist",
+  "name": "index",
+  "short_name": "index",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f1117",
