@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Havaist Saat Hesaplaması</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --muted:#94a3b8; --accent:#38bdf8; --ok:#22c55e; --text:#e5e7eb;
+    --chip:#0b1220; --chip-border:#1f2937; --bk:#f59e0b; --danger:#ef4444;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+  .wrap{max-width:840px;margin:0 auto;padding:1cm 14px 40px}
+  h1{font-size:22px;margin:6px 0 12px;text-align:center;letter-spacing:.2px;white-space:nowrap}
+  .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:0 6px 22px rgba(0,0,0,.35)}
+  .row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .label{font-size:14px;color:var(--muted);white-space:nowrap}
+  input[type="time"]{font-size:18px;background:var(--chip);color:var(--text);border:1px solid var(--chip-border);border-radius:10px;padding:6px 10px;outline:none;white-space:nowrap}
+  .pill{display:inline-block;padding:6px 10px;border-radius:10px;background:var(--chip);border:1px solid var(--chip-border);color:#cbd5e1;font-size:14px;white-space:nowrap}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+  @media(max-width:620px){.grid{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:420px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .time{border:2px solid var(--accent);color:var(--accent);background:transparent;border-radius:8px;
+        padding:4px 4px;text-align:center;font-weight:700;cursor:pointer;white-space:nowrap;
+        font-size:12px; line-height:1}
+  .time.green{border-color:var(--ok);color:#fff;background:#16a34a;box-shadow:0 0 0 2px rgba(34,197,94,.25)}
+  .time.bk{border-color:var(--bk); color:var(--bk)}
+  .legend{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:6px;color:var(--muted);font-size:12px;white-space:nowrap;flex-wrap:wrap}
+  .dot{width:8px;height:8px;border-radius:999px;display:inline-block;margin-right:4px;border:2px solid var(--accent)}
+  .dot.green{border-color:var(--ok)}
+  .dot.bk{border-color:var(--bk)}
+  .countdown{margin-top:6px;text-align:center;font-size:14px;white-space:nowrap}
+  .countdown strong{font-size:16px}
+  .footer{margin-top:14px;font-size:12px;color:var(--muted);text-align:center}
+  .summary{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+  .summary .item{
+    background:var(--chip);border:1px solid var(--chip-border);border-radius:10px;
+    padding:4px 8px; font-size:14px;display:flex;align-items:center;justify-content:space-between;
+    min-height:28px;
+  }
+  .labelLeft{display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .timeval{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size:18px; padding:2px 6px; border-radius:8px; background:#0a1220; border:1px solid #253048;
+    min-width:68px; text-align:center; white-space:nowrap; transition:all .2s ease;
+  }
+  .timeval.danger{color:#ffe4e6; border-color:var(--danger); background:#2a1013; box-shadow:0 0 0 2px rgba(239,68,68,.25);}
+  .emoji{opacity:.9;font-size:14px}
+  .panel{margin-top:8px;display:flex;flex-direction:column;gap:4px;align-items:center}
+  .panel .item{
+    background:var(--chip);border:1px solid var(--chip-border);border-radius:10px;
+    padding:4px 8px;max-width:640px;width:100%;font-size:14px;display:flex;align-items:center;justify-content:space-between;
+    min-height:28px;
+  }
+  .panel .item .timeval{min-width:86px}
+  .muted{color:var(--muted)}
+  .labelLeft strong{white-space:nowrap}
+  @media(max-width:420px){
+    h1{font-size:18px}
+    .label{font-size:12px}
+    .timeval{font-size:15px; min-width:60px}
+    .summary .item, .panel .item{font-size:13px}
+    .pill, input[type="time"]{font-size:14px}
+    .time{font-size:11px; padding:3px 3px}
+  }
+  @media(max-width:340px){
+    .timeval{font-size:13px; min-width:54px}
+    .summary .item, .panel .item{font-size:12px}
+    .time{font-size:10px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Havaist Saat Hesaplaması</h1>
+    <div class="card">
+      <div class="row" style="white-space:nowrap">
+        <div class="label">İmza saati:</div>
+        <input type="time" id="imzaSaat" value="00:00" step="60">
+        <button id="hesapla" class="pill">Hesapla</button>
+      </div>
+      <div class="summary" id="secimOzet">
+        <div class="item"><div class="labelLeft"><span class="emoji">📌</span><strong>Durak</strong></div><span id="durakTxt" class="timeval">-</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">🏠</span><strong>Evden Çıkış</strong></div><span id="leaveTxt" class="timeval">--:--</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">🚌</span><strong>Durağa Varış</strong></div><span id="arriveTxt" class="timeval">--:--</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">🕒</span><strong>Kalkış Saati</strong></div><span id="selectedTxt" class="timeval">--:--</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">📝</span><strong>İmza bitişi</strong> <span class="muted">(Lokal)</span></div><span id="imzaEndTxt" class="timeval">--:--</span></div>
+      </div>
+      <div class="panel" id="panel">
+        <div class="item"><div class="labelLeft"><span class="emoji">📍</span> <strong>Ekip Terminali Varış</strong></div><span id="ekipArr" class="timeval">--:--</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">⏳</span> <strong>İmzaya Kalan</strong> <span class="muted">(şu ana göre)</span></div><span id="imzaRemain" class="timeval">--</span></div>
+        <div class="item"><div class="labelLeft"><span class="emoji">🎯</span> <strong>Varışta Kalan Süre</strong></div><span id="imzaRemainAtArrival" class="timeval">--</span></div>
+      </div>
+      <div class="legend">
+        <span><span class="dot"></span>Merter</span>
+        <span><span class="dot bk"></span>Bakırköy</span>
+        <span><span class="dot green"></span>Seçilen sefer</span>
+      </div>
+      <div class="grid" id="saatlerMerged"></div>
+      <div class="countdown" id="geriSayim"></div>
+    </div>
+    <div class="footer muted">Geri sayım İstanbul saatine göre çalışır (Europe/Istanbul).</div>
+  </div>
+<script>
+const MERTER_LOCAL=["00:45","03:20","04:45","05:50","06:50","07:20","08:15","09:10","10:10","10:40","11:40","12:45","13:55","14:30","15:30","16:30","18:00","19:00","20:05","21:15","22:20","23:25"];
+const BAKIRKOY_LOCAL=["00:30","03:00","04:30","05:30","06:30","07:10","08:00","09:00","10:00","10:30","11:30","12:30","13:30","14:10","15:10","16:10","17:40","18:40","19:40","20:40","21:40","22:40"];
+function hmToMinutes(hm){const[h,m]=hm.split(':').map(Number);return h*60+m;}function minutesToHM(min){min=(min%1440+1440)%1440;const h=Math.floor(min/60),m=min%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');}
+function shift(hm,mins){return minutesToHM(hmToMinutes(hm)+mins);}function offsetForStop(stop){return stop==='Bakırköy'?40:30;}
+function toIstanbulNow(){const fmt=new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});const parts=Object.fromEntries(fmt.formatToParts(new Date()).map(p=>[p.type,p.value]));return new Date(Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute,+parts.second));}
+function localDateForToday(hm){const now=toIstanbulNow();const[hh,mm]=hm.split(':').map(Number);return new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),hh,mm,0));}
+function nextLocalOccurrence(hm){const now=toIstanbulNow();const[hh,mm]=hm.split(':').map(Number);const cand=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),hh,mm,0));if(cand<=now)cand.setUTCDate(cand.getUTCDate()+1);return cand;}
+const gridMerged=document.getElementById('saatlerMerged');let lastSelBtn=null,lastSelStop=null,lastSelHM=null;
+const merged=[...MERTER_LOCAL.map(hm=>({hm,stop:'Merter',cls:'time'})),...BAKIRKOY_LOCAL.map(hm=>({hm,stop:'Bakırköy',cls:'time bk'})),].sort((a,b)=>hmToMinutes(a.hm)-hmToMinutes(b.hm));
+function makeButton(entry){const b=document.createElement('button');b.className=entry.cls;b.textContent=entry.hm;b.dataset.stop=entry.stop;b.addEventListener('click',()=>recalcFromDeparture(entry.hm,entry.stop,b));return b;}
+merged.forEach(e=>gridMerged.appendChild(makeButton(e)));
+function firstDepartureConsideringOffsets(leaveHM){const leaveMin=hmToMinutes(leaveHM);for(const e of merged){const need=leaveMin+offsetForStop(e.stop);if(hmToMinutes(e.hm)>=need)return e;}return merged[0];}
+let countdownId=null,remainId=null;function startCountdownLocal(hm){const target=nextLocalOccurrence(hm);const el=document.getElementById('geriSayim');if(countdownId)clearInterval(countdownId);function tick(){const now=toIstanbulNow();const ms=target-now;if(ms<=0){el.textContent='Kalkış zamanı geldi!';clearInterval(countdownId);return;}const s=Math.floor(ms/1000);const H=String(Math.floor(s/3600)).padStart(2,'0');const M=String(Math.floor((s%3600)/60)).padStart(2,'0');const S=String(s%60).padStart(2,'0');el.innerHTML=`<strong>Kalkışa kalan:</strong> ${H}:${M}:${S}`;el.style.display='block';}tick();countdownId=setInterval(tick,1000);}
+function clearSel(){if(lastSelBtn){lastSelBtn.classList.remove('green');}}function humanizeDiffSigned(mins){if(mins<0)return'geçti';const h=Math.floor(mins/60),m=Math.abs(mins%60);const hs=h>0?`${h} sa `:'';return hs+`${m} dk`;}
+function applyRemainColor(elId,mins){const el=document.getElementById(elId);el.classList.toggle('danger',mins<60);}
+function updateImzaRemainLive(imzaEndHM){const remainEl=document.getElementById('imzaRemain');if(remainId)clearInterval(remainId);function tick(){const now=toIstanbulNow();const target=localDateForToday(imzaEndHM);const diffMin=Math.floor((target-now)/60000);remainEl.textContent=humanizeDiffSigned(diffMin);applyRemainColor('imzaRemain',diffMin);}tick();remainId=setInterval(tick,1000);}
+function updateSummary(stopName,leave,stopArrival,selected,imzaEnd){document.getElementById('durakTxt').textContent=stopName||'-';document.getElementById('leaveTxt').textContent=leave;document.getElementById('arriveTxt').textContent=stopArrival;document.getElementById('selectedTxt').textContent=selected;document.getElementById('imzaEndTxt').textContent=imzaEnd;}
+function setPanel(ekipArrival,imzaEndHM){document.getElementById('ekipArr').textContent=ekipArrival;updateImzaRemainLive(imzaEndHM);const remainArr=hmToMinutes(imzaEndHM)-hmToMinutes(ekipArrival);document.getElementById('imzaRemainAtArrival').textContent=humanizeDiffSigned(remainArr);applyRemainColor('imzaRemainAtArrival',remainArr);}
+function recalcFromDeparture(depHM,stopName,btn){const imza=document.getElementById('imzaSaat').value;const off=offsetForStop(stopName);const leave=shift(depHM,-off);const stopArrival=shift(leave,off);const imzaEnd=shift(imza||leave,180);const ekipArrival=shift(depHM,60);clearSel();btn.classList.add('green');lastSelBtn=btn;lastSelStop=stopName;lastSelHM=depHM;updateSummary(stopName,leave,stopArrival,depHM,imzaEnd);setPanel(ekipArrival,imzaEnd);startCountdownLocal(depHM);}
+function calculateFromImza(){const imza=document.getElementById('imzaSaat').value||"00:00";const leave=imza;const e=firstDepartureConsideringOffsets(leave);const selected=e.hm,stopName=e.stop;const stopArrival=shift(leave,offsetForStop(stopName));const imzaEnd=shift(imza,180);const ekipArrival=shift(selected,60);clearSel();const btn=Array.from(gridMerged.children).find(b=>b.textContent===selected&&b.dataset.stop===stopName);if(btn){btn.classList.add('green');lastSelBtn=btn;lastSelStop=stopName;lastSelHM=selected;}updateSummary(stopName,leave,stopArrival,selected,imzaEnd);setPanel(ekipArrival,imzaEnd);startCountdownLocal(selected);}
+document.getElementById('hesapla').addEventListener('click',calculateFromImza);document.getElementById('imzaSaat').addEventListener('input',calculateFromImza);document.getElementById('imzaSaat').addEventListener('change',calculateFromImza);calculateFromImza();
+</script>
+</body>
+</html>
