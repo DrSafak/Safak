@@ -826,6 +826,18 @@ body.light .topic-box h2{
   font-size: inherit;
 }
 
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+.topic-box.shake {
+  animation: shake 0.4s ease;
+}
+
 </style>
 </head>
 <body>
@@ -1369,7 +1381,7 @@ function checkCompletion(topicEl){
 
 /* =========================================================
    📝 MADDE/RESET TIKLAMALARI
-   - .item tık: done toggle → checkCompletion
+   - .item tık: done toggle → checkCompletion (ancak son madde ve geride eksik varsa uyar)
    - [data-reset] tık: o topic içini sıfırla
    ========================================================= */
 document.addEventListener('click', (e) => {
@@ -1378,10 +1390,36 @@ document.addEventListener('click', (e) => {
 
   // Madde tıklaması (info-btn’e değilse)
   if (itemBtn && !e.target.classList.contains('info-btn')) {
+    const topic = itemBtn.closest('.topic-box');
+    const items = Array.from(topic.querySelectorAll('.item'));
+    const idx   = items.indexOf(itemBtn);
+
+    // Bu bölümde, tıklanan maddenin ÜSTÜNDE tamamlanmamış madde var mı?
+    const firstUndoneIndex = items.findIndex(el => !el.classList.contains('done') && !el.classList.contains('hidden'));
+    const hasEarlierUndone = firstUndoneIndex !== -1 && firstUndoneIndex < idx;
+
+    // Kullanıcı en sondaki maddeye tıklıyorsa ve geride tamamlanmamış varsa uyarı ver
+    const isLastItem = idx === items.length - 1;
+
+    if (isLastItem && hasEarlierUndone) {
+      // Titreşim
+      topic.classList.add('shake');
+      setTimeout(()=> topic.classList.remove('shake'), 500);
+
+      // İlk eksik maddeye kaydır ve odakla
+      const target = items[firstUndoneIndex];
+      target.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(()=>{ try { target.focus({preventScroll:true}); } catch(_){} }, 200);
+      return; // bu tıklama ile done olmasın
+    }
+
+    // Normal davranış
     itemBtn.classList.toggle('done');
     const becameDone = itemBtn.classList.contains('done');
-    checkCompletion(itemBtn.closest('.topic-box'));
-    if (becameDone) { scrollToNextItem(itemBtn); }
+    checkCompletion(topic);
+    if (becameDone) {
+      if ('vibrate' in navigator) { try{ navigator.vibrate(80); }catch(_){} }
+ scrollToNextItem(itemBtn); }
     return;
   }
 
@@ -1449,6 +1487,8 @@ if (copyBtn) {
     if (currentItemEl) {
       currentItemEl.classList.add('done');
       checkCompletion(currentItemEl.closest('.topic-box'));
+    if ('vibrate' in navigator) { try{ navigator.vibrate(80); }catch(_){} }
+
     }
     closeDesc();
   });
@@ -1886,6 +1926,153 @@ document.addEventListener('DOMContentLoaded', ()=>{
     m.addEventListener('click', (e)=>{
       if(e.target === m) m.classList.remove('show');
     });
+  }
+});
+
+
+// === ESC Global Reset ===
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // Eğer modal açıksa, sadece modal kapanır
+    if (modal?.classList.contains('show')) {
+      closeDesc();
+      return;
+    }
+    // Modal açık değilse: tüm checklist resetlensin
+    document.querySelectorAll('.item').forEach(item => item.classList.remove('done','hidden'));
+    document.querySelectorAll('.topic-box').forEach(topic => {
+      topic.classList.remove('completed');
+      checkCompletion(topic);
+    });
+  }
+});
+
+
+// === Keyboard Navigation with Arrow Keys ===
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+  const items = Array.from(document.querySelectorAll('.item:not(.hidden)'));
+  if (!items.length) return;
+
+  // currently focused item (if any)
+  const activeEl = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.item') : null;
+  let idx = items.indexOf(activeEl);
+  if (idx === -1) {
+    // no item focused yet: pick the first visible one
+    idx = 0;
+  } else {
+    if (e.key === 'ArrowDown') {
+      idx = Math.min(idx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      idx = Math.max(idx - 1, 0);
+    }
+  }
+
+  const nextItem = items[idx];
+  if (nextItem) {
+    try { nextItem.focus({preventScroll:true}); } catch(_){}
+    nextItem.scrollIntoView({behavior:'smooth', block:'center'});
+    e.preventDefault();
+  }
+});
+
+
+// === Save/Load Controls Injection ===
+(function injectProfileControls(){
+  const top = document.getElementById('topControls');
+  if(!top) return;
+  if(document.getElementById('saveAsProfile')) return; // already injected
+
+  const saveBtn = document.createElement('button');
+  saveBtn.id = 'saveAsProfile';
+  saveBtn.title = 'Save checklist as profile';
+  saveBtn.textContent = '🖫';
+  top.appendChild(saveBtn);
+
+  const loadBtn = document.createElement('button');
+  loadBtn.id = 'loadProfile';
+  loadBtn.title = 'Load saved checklist profile';
+  loadBtn.textContent = '📂';
+  top.appendChild(loadBtn);
+})();
+
+
+// === Named Checklist Profiles (Save / Load) ===
+const PROFILE_STORAGE_KEY = 'savedChecklistsV1';
+
+function getProfiles(){
+  try{
+    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function setProfiles(obj){
+  try{ localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(obj)); }catch(e){}
+}
+
+// Dump current DOM state of topics (innerHTML) + theme + localStorage data we already use
+function dumpChecklistSnapshot(){
+  const topics = {};
+  document.querySelectorAll('.topic-box').forEach(sec => {
+    topics[sec.id] = sec.innerHTML; // capture structure, items, done/hidden states, etc.
+  });
+  const snapshot = {
+    topics,
+    themeLight: document.body.classList.contains('light'),
+    // also capture existing feature data, if any
+    customItems: localStorage.getItem('customItems') || null,
+    fcomEdits: localStorage.getItem('fcomEdits') || null,
+    userNotes: localStorage.getItem('userNotes') || null,
+    ts: Date.now()
+  };
+  return snapshot;
+}
+
+// Restore snapshot back into DOM & storage
+function restoreChecklistSnapshot(snap){
+  if(!snap || !snap.topics) return;
+  // Restore sections
+  for(const [id, html] of Object.entries(snap.topics)){
+    const sec = document.getElementById(id);
+    if(sec) sec.innerHTML = html;
+  }
+  // Restore theme
+  document.body.classList.toggle('light', !!snap.themeLight);
+
+  // Restore storages if present
+  if (snap.customItems !== null) localStorage.setItem('customItems', snap.customItems);
+  if (snap.fcomEdits   !== null) localStorage.setItem('fcomEdits', snap.fcomEdits);
+  if (snap.userNotes   !== null) localStorage.setItem('userNotes', snap.userNotes);
+
+  // Re-wire dynamic behaviors after DOM replacement
+  buildLeaders();
+  attachModalClosers();
+  ensureActionsRow?.();
+  document.querySelectorAll('.topic-box').forEach(checkCompletion);
+}
+
+// Handlers for buttons
+document.addEventListener('click', (e)=>{
+  if(e.target && e.target.id === 'saveAsProfile'){
+    const name = prompt('Save checklist as (name):');
+    if(!name) return;
+    const profiles = getProfiles();
+    if (profiles[name] && !confirm('A profile with this name exists. Overwrite?')) return;
+    profiles[name] = dumpChecklistSnapshot();
+    setProfiles(profiles);
+    // small visual feedback
+    e.target.animate([{transform:'scale(1)'},{transform:'scale(1.1)'},{transform:'scale(1)'}], {duration:250});
+  }
+  if(e.target && e.target.id === 'loadProfile'){
+    const profiles = getProfiles();
+    const names = Object.keys(profiles);
+    if(!names.length){ alert('No saved profiles found.'); return; }
+    const name = prompt('Load which profile?\n' + names.join(', '));
+    if(!name || !profiles[name]) return;
+    restoreChecklistSnapshot(profiles[name]);
+    // feedback
+    e.target.animate([{transform:'scale(1)'},{transform:'scale(1.1)'},{transform:'scale(1)'}], {duration:250});
   }
 });
 
