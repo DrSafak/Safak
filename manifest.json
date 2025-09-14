@@ -3,6 +3,7 @@
   "short_name": "A320 Checklist",
   "description": "Fenix A320 için interaktif akıllı checklist uygulaması",
   "start_url": "./index.html",
+  "start_url": "./a320-prelim.html",
   "display": "standalone",
   "background_color": "#0f1117",
   "theme_color": "#048CFC",
