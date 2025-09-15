@@ -299,7 +299,15 @@
       display: inline-block;
       white-space: nowrap;
      white-space: normal;}
-  </style>
+  
+#globalReset {
+  white-space: nowrap !important;       /* yazı tek satırda kalsın */
+  overflow: hidden !important;          /* taşmayı gizle */
+  text-overflow: ellipsis !important;   /* sığmazsa üç nokta */
+  font-size: clamp(12px, 4vw, 28px) !important; /* küçülerek sığsın */
+}
+
+</style>
 <style>
 /* === Main top nav buttons === */
 #__hardMainNav{
