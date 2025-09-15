@@ -174,19 +174,26 @@
   min-height: unset;    /* sabit yükseklik varsa iptal et */
 }
 
-.completed h2 {
-  color: #22c55e; /* başlık da yeşil olacak */
-}
 
+
+
+  
+.completed h2 {
+  color: #22c55e; /* başlık yeşil */
+  white-space: nowrap !important;    /* tek satır */
+  overflow: hidden !important;       /* taşma gizle */
+  text-overflow: clip !important;    /* üç noktasız kes */
+  font-size: clamp(12px, 3vw, 22px) !important; /* sığacak kadar küçülsün */
+}
 .completed h2::after {
   content: "  CHECKLIST COMPLETED";
-  color: #22c55e;  /* yeşil */
+  color: #22c55e;
   font-weight: 700;
   margin-left: 8px;
+  white-space: nowrap !important;    /* tek satır */
 }
 
-
-  </style>
+</style>
 <style>
 /* removed old hard nav */
 #__hardMainNav{
