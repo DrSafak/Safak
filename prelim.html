@@ -303,14 +303,7 @@
     }
 
     .completed h2 { color: #22c55e; }
-    .completed h2::after {
-      content: "  CHECKLIST COMPLETED";
-      color: #22c55e;
-      font-weight: 700;
-      margin-left: 8px;
-      display: inline-block;
-      white-space: nowrap;
-     white-space: normal;}
+    
   
 #globalReset {
   white-space: nowrap !important;       /* yazı tek satırda kalsın */
@@ -518,6 +511,20 @@ h3#globalReset{
 /* Guard: remove any inner/wrapper transforms that might duplicate styling */
 #globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
 </style>
+
+<style>
+/* === Completed section titles: keep green (already defined) and ensure single-line on mobile === */
+@media (max-width: 640px){
+  .topic-box h2{
+    white-space: nowrap !important;    /* tek satır */
+    overflow: hidden !important;       /* taşma gizle */
+    text-overflow: clip !important;    /* üç nokta istemiyorsan clip */
+    font-size: clamp(12px, 4vw, 22px) !important; /* sığacak kadar küçülsün */
+    line-height: 1.2 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
