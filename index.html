@@ -834,59 +834,17 @@ body.light .topic-box h2{
 }
 
 </style><style>
-/* removed old hard nav */
-#__hardMainNav{
-  width: min(700px, 92vw) !important;
-  margin: 10px auto 20px !important;
-  display: flex !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  z-index: 50 !important;
-}
-#__hardMainNav .__tab{
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 140px !important;
-  padding: 10px 14px !important;
-  border-radius: var(--radius-lg) !important;
-  text-decoration: none !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  line-height: 1 !important;
-  background: #007bff !important;
-  color: #fff !important;
-  box-shadow: var(--shadow) !important;
-}
-#__hardMainNav .__tab.__active{ background:#005ec0 !important; }
-#__hardMainNav .__tab:hover{ filter: brightness(1.05) !important; }
+/* === HARD NAV (guaranteed visible) === */
+/* removed old hardMainNav */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
 </style><style>
-/* removed old hard nav */
-#__hardMainNav{
-  width: min(700px, 92vw) !important;
-  margin: 10px auto 20px !important;
-  display: flex !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  z-index: 50 !important;
-}
-#__hardMainNav .__tab{
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 140px !important;
-  padding: 10px 14px !important;
-  border-radius: var(--radius-lg) !important;
-  text-decoration: none !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  line-height: 1 !important;
-  background: #007bff !important;
-  color: #fff !important;
-  box-shadow: var(--shadow) !important;
-}
-#__hardMainNav .__tab.__active{ background:#005ec0 !important; }
-#__hardMainNav .__tab:hover{ filter: brightness(1.05) !important; }
+/* === HARD NAV under title bar === */
+/* removed old hardMainNav */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
 </style><style>
 /* === Fix overlapping/double blue bar on the top title === */
 #globalResetWrap{
@@ -1036,27 +994,27 @@ body.light .topic-box h2{
 </style>
 <style>
 /* === Aviation-themed nav colors for __hardMainNav/__tab structure === */
-#__hardMainNav .__tab:nth-child(1) { background: #007bff !important; } /* VATSIM */
-#__hardMainNav .__tab:nth-child(2) { background: #fd7e14 !important; } /* PRELIM */
-#__hardMainNav .__tab:nth-child(3) { background: #28a745 !important; } /* NORMAL */
+/* removed old hardMainNav tab */ /* VATSIM */
+/* removed old hardMainNav tab */ /* PRELIM */
+/* removed old hardMainNav tab */ /* NORMAL */
 
-#__hardMainNav .__tab:nth-child(1):hover { background: #0069d9 !important; }
-#__hardMainNav .__tab:nth-child(2):hover { background: #e8590c !important; }
-#__hardMainNav .__tab:nth-child(3):hover { background: #218838 !important; }
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
 
-#__hardMainNav .__tab.__active { filter: brightness(0.9) !important; }
+/* removed old hardMainNav tab */
 </style>
 <style>
 /* === Theme 3: Cockpit Deep (deep tones, high contrast) === */
-#__hardMainNav .__tab:nth-child(1){ background:#1f3b73 !important; } /* VATSIM: deep navy */
-#__hardMainNav .__tab:nth-child(2){ background:#b35400 !important; } /* PRELIM: burnt orange */
-#__hardMainNav .__tab:nth-child(3){ background:#157347 !important; } /* NORMAL: deep green */
+/* removed old hardMainNav tab */ /* VATSIM: deep navy */
+/* removed old hardMainNav tab */ /* PRELIM: burnt orange */
+/* removed old hardMainNav tab */ /* NORMAL: deep green */
 
-#__hardMainNav .__tab:nth-child(1):hover{ background:#1a315f !important; }
-#__hardMainNav .__tab:nth-child(2):hover{ background:#984800 !important; }
-#__hardMainNav .__tab:nth-child(3):hover{ background:#125f3a !important; }
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
+/* removed old hardMainNav tab */
 
-#__hardMainNav .__tab.__active{ filter:brightness(.92) !important; }
+/* removed old hardMainNav tab */
 </style>
 <style>
 /* === Completed topics: hide possible 'Add Row' controls === */
@@ -2936,13 +2894,16 @@ document.addEventListener('keydown', (e) => {
   width: min(700px, 92vw) !important;
   margin: 10px auto 20px !important;
   display: flex !important;
-  justify-content: space-between !important; /* sağa sola yasla */
-  flex-wrap: wrap !important;               /* taşma olursa alta geçsin */
-  gap: 8px !important;                      /* buton arası boşluk */
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;   /* alt satıra geçmesin */
+  gap: 6px !important;
   z-index: 50 !important;
 }
 #__hardMainNav .__tab {
-  flex: 1 1 auto !important;    /* esnek genişlik */
+  flex: 1 1 0 !important;         /* hepsi eşit küçülsün */
+  min-width: 0 !important;        /* daralmaya izin ver */
+  padding: 8px 6px !important;    /* küçük padding */
+  font-size: clamp(10px, 2.5vw, 13px) !important; /* mobilde küçülür */
   text-align: center !important;
 }
 
