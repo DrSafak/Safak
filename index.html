@@ -965,17 +965,7 @@ body.light .topic-box h2{
   margin: 0;
   color: #fff;
 }
-#topTitleBar .title-edit-btn{
-  margin-left: 6px;
-  width: 18px;
-  height: 18px;
-  font-size: 11px;
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  color: #fff;
-  vertical-align: middle;
-}
+
 
 /* Neutralize any old wrap styles (if remains from cache fragments) */
 #globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
@@ -1525,7 +1515,7 @@ function closeDesc(){
 }
 
 /* =========================================================
-   ✏️ BUILDER: Madde satırlarını (l ... r) yapısına dönüştürme
+    BUILDER: Madde satırlarını (l ... r) yapısına dönüştürme
    - buildLeaders: "LEFT .... RIGHT" ayrışması ve ? butonu ekleme
    ========================================================= */
 function buildLeaders() {
@@ -1874,7 +1864,7 @@ document.querySelectorAll('.topic-box').forEach(checkCompletion);
 
 
 /* =========================================================
-   ✏️ FCOM NOTE DÜZENLEME (KORUNAN YAPI)
+    FCOM NOTE DÜZENLEME (KORUNAN YAPI)
    - Sadece açıklama metni düzenlenir, checklist yapısı etkilenmez
    ========================================================= */
 const editBtn = document.getElementById('editBtn');
@@ -2666,21 +2656,6 @@ document.addEventListener('keydown', (e) => {
     body.light .title-edit-btn:hover{ background: rgba(0,0,0,.14); }
   `;
   document.head.appendChild(style);
-
-  // ANA BAŞLIK (h3#globalReset) – varsa düzenlenebilir yap
-  const mainH = document.getElementById('globalReset');
-  if (mainH){
-    const key = 'globalTitle';
-    if (titleEdits[key]) mainH.textContent = titleEdits[key];
-    const wrap = document.createElement('span');
-    wrap.className = 'title-edit-wrap';
-    wrap.id = 'globalResetWrap';
-    mainH.replaceWith(wrap);
-    wrap.appendChild(mainH);
-    const btn = makeIconButton('Başlığı düzenle', 'Başlığı düzenle');
-    btn.addEventListener('click', () => enableEditing(mainH, key));
-    wrap.appendChild(btn);
-  }
 
   // BÖLÜM BAŞLIKLARI (.topic-box > h2)
   document.querySelectorAll('.topic-box').forEach(section => {
