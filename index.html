@@ -1,5 +1,4 @@
 <html lang="tr"><head>
-
 <!-- 🔒 No-Cache Shim for Title Edits -->
 <script>
 (function(){
@@ -37,19 +36,18 @@
   }catch(e){}
 })();
 </script>
-
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1" name="viewport">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Fenix A320 Smart Checklist</title>
 <!-- iOS & PWA için -->
-<link href="./manifest.json" rel="manifest">
-<meta content="yes" name="apple-mobile-web-app-capable">
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
-<meta content="A320 Checklist" name="apple-mobile-web-app-title">
-<link href="icons/icon-192.png" rel="apple-touch-icon">
-<link href="icons/icon-192.png" rel="icon" sizes="192x192" type="image/png">
-<link href="icons/icon-512.png" rel="icon" sizes="512x512" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="./manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="A320 Checklist" name="apple-mobile-web-app-title"/>
+<link href="icons/icon-192.png" rel="apple-touch-icon"/>
+<link href="icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
+<link href="icons/icon-512.png" rel="icon" sizes="512x512" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet"/>
 <style>
 
 /* =========================================================
@@ -1141,12 +1139,10 @@ body.light .topic-box h2{
 #dualEditOK{ background:#0d6efd; color:#fff; }
 #dualEditCancel{ background:#6c757d; color:#fff; }
 </style>
-
 <style>
 /* Safety net: hide any duplicate title edit pencils beyond the first */
 .title-edit-wrap .title-edit-btn:not(:first-of-type){ display:none !important; }
 </style>
-
 <style>
     .title-edit-wrap{ display:inline-flex; align-items:center; gap:8px; }
     .title-edit-btn{ 
@@ -1200,24 +1196,34 @@ body.light .topic-box h2{
       background: rgba(0,0,0,.06);
     }
     body.light .title-edit-btn:hover{ background: rgba(0,0,0,.14); }
-  </style></head>
+  </style><style>
+@media (max-width: 640px){
+  #topTitleBar #globalReset {
+    font-size: clamp(14px, 5vw, 28px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    line-height: 1.2 !important;
+  }
+}
+</style></head>
 <body>
 <div id="topTitleBar"><h3 id="globalReset">FENIX A320 SMART CHECKLIST</h3></div><nav id="__hardMainNav"><a class="__tab __active" href="index.html">VATSIM CHKL</a><a class="__tab" href="prelim.html">PRELIM CHKL</a><a class="__tab" href="normal.html">NORMAL CHKL</a></nav>
 <div id="topControls"><button id="infoToggle">ℹ️</button><button id="themeToggle">☀️</button><button id="exportToggle">💾</button><button id="restoreToggle">⟲</button></div>
-<section aria-label="AIRCRAFT POWER" class="topic-box" id="topic1" data-title-key="AIRCRAFT POWER">
-<div class="title-edit-wrap"><h2 contenteditable="false">AIRCRAFT POWER</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n1" id="item-n1" data-key="EXTERNAL POWER ON"><p data-raw="EXTERNAL POWER ON"><span class="l">EXTERNAL POWER</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n2" id="item-n2" data-key="BAT 1 &amp; 2 ON"><p data-raw="BAT 1 &amp; 2 ON"><span class="l">BAT 1 &amp; 2</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<section aria-label="AIRCRAFT POWER" class="topic-box" data-title-key="AIRCRAFT POWER" id="topic1">
+<div class="title-edit-wrap"><h2 contenteditable="false">AIRCRAFT POWER</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="EXTERNAL POWER ON" data-note-id="n1" id="item-n1"><p data-raw="EXTERNAL POWER ON"><span class="l">EXTERNAL POWER</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="BAT 1 &amp; 2 ON" data-note-id="n2" id="item-n2"><p data-raw="BAT 1 &amp; 2 ON"><span class="l">BAT 1 &amp; 2</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="EFB INITIALIZATION" class="topic-box" id="topic2">
-<div class="title-edit-wrap"><h2>EFB INITIALIZATION</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item simbrief" data-note-id="n3" id="item-n3" data-key="SIMBRIEF DATA IMPORT"><p data-raw="SIMBRIEF DATA IMPORT"><span class="l">SIMBRIEF DATA</span><span class="dotfill" aria-hidden="true"></span><span class="r">IMPORT</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n4" id="item-n4" data-key="GROUND SERVICES SET"><p data-raw="GROUND SERVICES SET"><span class="l">GROUND SERVICES</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n5" id="item-n5" data-key="MASS AND BALANCE LOAD"><p data-raw="MASS AND BALANCE LOAD"><span class="l">MASS AND BALANCE</span><span class="dotfill" aria-hidden="true"></span><span class="r">LOAD</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>EFB INITIALIZATION</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item simbrief" data-key="SIMBRIEF DATA IMPORT" data-note-id="n3" id="item-n3"><p data-raw="SIMBRIEF DATA IMPORT"><span class="l">SIMBRIEF DATA</span><span aria-hidden="true" class="dotfill"></span><span class="r">IMPORT</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="GROUND SERVICES SET" data-note-id="n4" id="item-n4"><p data-raw="GROUND SERVICES SET"><span class="l">GROUND SERVICES</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="MASS AND BALANCE LOAD" data-note-id="n5" id="item-n5"><p data-raw="MASS AND BALANCE LOAD"><span class="l">MASS AND BALANCE</span><span aria-hidden="true" class="dotfill"></span><span class="r">LOAD</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="OVERHEAD PREPARATION" class="topic-box" id="topic3">
-<div class="title-edit-wrap"><h2>OVERHEAD PREPARATION</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<div class="item" data-note-id="n6" id="item-n6" role="button" tabindex="0" data-key="CREW SUPPLY ON">
+<div class="title-edit-wrap"><h2>OVERHEAD PREPARATION</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<div class="item" data-key="CREW SUPPLY ON" data-note-id="n6" id="item-n6" role="button" tabindex="0">
 <!-- Alt maddeler -->
 <ul class="sub-list">
 <li> CREW SUPPLY  ON</li>
@@ -1231,22 +1237,22 @@ body.light .topic-box h2{
 <li> NAV &amp; LOGO LT POSITION 1</li>
 <li> FUEL PUMPS ON </li>
 </ul>
-<span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></div>
+<span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></div>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="MCDU DIFSRIPP SETUP" class="topic-box" id="topic4">
-<div class="title-edit-wrap"><h2>MCDU DIFSRIPP SETUP</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n7" id="item-n7" data-key="DATA CHECK DATABASE"><p data-raw="DATA CHECK DATABASE"><span class="l">DATA CHECK</span><span class="dotfill" aria-hidden="true"></span><span class="r">DATABASE</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n8" id="item-n8" data-key="INIT (A Page) INIT REQUEST"><p data-raw="INIT (A Page) INIT REQUEST"><span class="l">INIT (A Page) INIT</span><span class="dotfill" aria-hidden="true"></span><span class="r">REQUEST</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n9" id="item-n9" data-key="F-PLN SET DEP / ARR"><p data-raw="F-PLN SET DEP / ARR"><span class="l">F-PLN SET DEP /</span><span class="dotfill" aria-hidden="true"></span><span class="r">ARR</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n10" id="item-n10" data-key="SEC F-PLN COPY ACTIVE"><p data-raw="SEC F-PLN COPY ACTIVE"><span class="l">SEC F-PLN COPY</span><span class="dotfill" aria-hidden="true"></span><span class="r">ACTIVE</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n11" id="item-n11" data-key="RAD NAV FORCE NEARBY"><p data-raw="RAD NAV FORCE NEARBY"><span class="l">RAD NAV FORCE</span><span class="dotfill" aria-hidden="true"></span><span class="r">NEARBY</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n12" id="item-n12" data-key="INIT (B Page) SET"><p data-raw="INIT (B Page) SET"><span class="l">INIT (B Page)</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n13" id="item-n13" data-key="PERF SET"><p data-raw="PERF SET"><span class="l">PERF</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n14" id="item-n14" data-key="PROG SET"><p data-raw="PROG SET"><span class="l">PROG</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>MCDU DIFSRIPP SETUP</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="DATA CHECK DATABASE" data-note-id="n7" id="item-n7"><p data-raw="DATA CHECK DATABASE"><span class="l">DATA CHECK</span><span aria-hidden="true" class="dotfill"></span><span class="r">DATABASE</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="INIT (A Page) INIT REQUEST" data-note-id="n8" id="item-n8"><p data-raw="INIT (A Page) INIT REQUEST"><span class="l">INIT (A Page) INIT</span><span aria-hidden="true" class="dotfill"></span><span class="r">REQUEST</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="F-PLN SET DEP / ARR" data-note-id="n9" id="item-n9"><p data-raw="F-PLN SET DEP / ARR"><span class="l">F-PLN SET DEP /</span><span aria-hidden="true" class="dotfill"></span><span class="r">ARR</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="SEC F-PLN COPY ACTIVE" data-note-id="n10" id="item-n10"><p data-raw="SEC F-PLN COPY ACTIVE"><span class="l">SEC F-PLN COPY</span><span aria-hidden="true" class="dotfill"></span><span class="r">ACTIVE</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="RAD NAV FORCE NEARBY" data-note-id="n11" id="item-n11"><p data-raw="RAD NAV FORCE NEARBY"><span class="l">RAD NAV FORCE</span><span aria-hidden="true" class="dotfill"></span><span class="r">NEARBY</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="INIT (B Page) SET" data-note-id="n12" id="item-n12"><p data-raw="INIT (B Page) SET"><span class="l">INIT (B Page)</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PERF SET" data-note-id="n13" id="item-n13"><p data-raw="PERF SET"><span class="l">PERF</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PROG SET" data-note-id="n14" id="item-n14"><p data-raw="PROG SET"><span class="l">PROG</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="CENTER PEDESTAL SETUP" class="topic-box" id="topic5">
-<div class="title-edit-wrap"><h2>CENTER PEDESTAL SETUP</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<div class="item" data-note-id="n15" id="item-n15" role="button" tabindex="0" data-key="RADIO MANAGEMENT AND AUDIO CONTROL PANEL (RMP &amp; ACP)">
+<div class="title-edit-wrap"><h2>CENTER PEDESTAL SETUP</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<div class="item" data-key="RADIO MANAGEMENT AND AUDIO CONTROL PANEL (RMP &amp; ACP)" data-note-id="n15" id="item-n15" role="button" tabindex="0">
 <!-- Üst satır -->
 <div class="header-line">
 <span class="l">RADIO MANAGEMENT AND AUDIO CONTROL PANEL (RMP &amp; ACP)</span>
@@ -1261,11 +1267,11 @@ body.light .topic-box h2{
 <li> VHF1 SELECTED ON RIGHT SIDE (If you are flying as a co-pilot) </li>
 <li> TCAS ON</li>
 </ul>
-<span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></div>
+<span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></div>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="Pre-Departure Clearance (CPDLC)" class="topic-box" id="topic6">
-<div class="title-edit-wrap"><h2>Pre-Departure Clearance (CPDLC)</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<div class="item" data-note-id="n16" id="item-n16" role="button" tabindex="0" data-key="CHECK ATIS &amp; METAR">
+<div class="title-edit-wrap"><h2>Pre-Departure Clearance (CPDLC)</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<div class="item" data-key="CHECK ATIS &amp; METAR" data-note-id="n16" id="item-n16" role="button" tabindex="0">
 <!-- Alt maddeler -->
 <ul class="sub-list">
 <li> CHECK ATIS &amp; METAR</li>
@@ -1276,36 +1282,36 @@ body.light .topic-box h2{
 <li> SQUAWK SET</li>
 <li> BARO REF  SET BOTH</li>
 <li> INITIAL CLIMB  SET</li>
-</ul><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></div><button class="item" data-note-id="n17" id="item-n17" data-key="APU START"><p data-raw="APU START"><span class="l">APU</span><span class="dotfill" aria-hidden="true"></span><span class="r">START</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n18" id="item-n18" data-key="APU BLEED ON"><p data-raw="APU BLEED ON"><span class="l">APU BLEED</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n19" id="item-n19" data-key="EXTERNAL POWER OFF"><p data-raw="EXTERNAL POWER OFF"><span class="l">EXTERNAL POWER</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+</ul><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></div><button class="item" data-key="APU START" data-note-id="n17" id="item-n17"><p data-raw="APU START"><span class="l">APU</span><span aria-hidden="true" class="dotfill"></span><span class="r">START</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="APU BLEED ON" data-note-id="n18" id="item-n18"><p data-raw="APU BLEED ON"><span class="l">APU BLEED</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="EXTERNAL POWER OFF" data-note-id="n19" id="item-n19"><p data-raw="EXTERNAL POWER OFF"><span class="l">EXTERNAL POWER</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="PUSHBACK AND STARTUP" class="topic-box" id="topic7">
-<div class="title-edit-wrap"><h2>PUSHBACK AND STARTUP</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n20" id="item-n20" data-key="GROUND CONNECTIONS REMOVE"><p data-raw="GROUND CONNECTIONS REMOVE"><span class="l">GROUND CONNECTIONS</span><span class="dotfill" aria-hidden="true"></span><span class="r">REMOVE</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n21" id="item-n21" data-key="WINDOWS/DOORS CLOSED (BOTH)"><p data-raw="WINDOWS/DOORS CLOSED (BOTH)"><span class="l">WINDOWS/DOORS CLOSED</span><span class="dotfill" aria-hidden="true"></span><span class="r">(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n22" id="item-n22" data-key="PUSHBACK TUG CONNECT"><p data-raw="PUSHBACK TUG CONNECT"><span class="l">PUSHBACK TUG</span><span class="dotfill" aria-hidden="true"></span><span class="r">CONNECT</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n23" id="item-n23" data-key="PARKING BRAKE OFF"><p data-raw="PARKING BRAKE OFF"><span class="l">PARKING BRAKE</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n24" id="item-n24" data-key="TCAS TA/RA"><p data-raw="TCAS TA/RA"><span class="l">TCAS</span><span class="dotfill" aria-hidden="true"></span><span class="r">TA/RA</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n25" id="item-n25" data-key="BEACON ON"><p data-raw="BEACON ON"><span class="l">BEACON</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>PUSHBACK AND STARTUP</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="GROUND CONNECTIONS REMOVE" data-note-id="n20" id="item-n20"><p data-raw="GROUND CONNECTIONS REMOVE"><span class="l">GROUND CONNECTIONS</span><span aria-hidden="true" class="dotfill"></span><span class="r">REMOVE</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="WINDOWS/DOORS CLOSED (BOTH)" data-note-id="n21" id="item-n21"><p data-raw="WINDOWS/DOORS CLOSED (BOTH)"><span class="l">WINDOWS/DOORS CLOSED</span><span aria-hidden="true" class="dotfill"></span><span class="r">(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PUSHBACK TUG CONNECT" data-note-id="n22" id="item-n22"><p data-raw="PUSHBACK TUG CONNECT"><span class="l">PUSHBACK TUG</span><span aria-hidden="true" class="dotfill"></span><span class="r">CONNECT</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PARKING BRAKE OFF" data-note-id="n23" id="item-n23"><p data-raw="PARKING BRAKE OFF"><span class="l">PARKING BRAKE</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="TCAS TA/RA" data-note-id="n24" id="item-n24"><p data-raw="TCAS TA/RA"><span class="l">TCAS</span><span aria-hidden="true" class="dotfill"></span><span class="r">TA/RA</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="BEACON ON" data-note-id="n25" id="item-n25"><p data-raw="BEACON ON"><span class="l">BEACON</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="AFTER START" class="topic-box" id="topic8">
-<div class="title-edit-wrap"><h2>AFTER START </h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n26" id="item-n26" data-key="ANTI ICE ____"><p data-raw="ANTI ICE ____"><span class="l">ANTI ICE</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n27" id="item-n27" data-key="ECAM STATUS CHECKED"><p data-raw="ECAM STATUS CHECKED"><span class="l">ECAM STATUS</span><span class="dotfill" aria-hidden="true"></span><span class="r">CHECKED</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n28" id="item-n28" data-key="PITCH TRIM ____%"><p data-raw="PITCH TRIM ____%"><span class="l">PITCH TRIM</span><span class="dotfill" aria-hidden="true"></span><span class="r">____%</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n29" id="item-n29" data-key="RUDDER TRIM NEUTRAL"><p data-raw="RUDDER TRIM NEUTRAL"><span class="l">RUDDER TRIM</span><span class="dotfill" aria-hidden="true"></span><span class="r">NEUTRAL</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n30" id="item-n30" data-key="FLIGHT CONTROLS CHECKED(BOTH)"><p data-raw="FLIGHT CONTROLS CHECKED(BOTH)"><span class="l">FLIGHT CONTROLS</span><span class="dotfill" aria-hidden="true"></span><span class="r">CHECKED(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n31" id="item-n31" data-key="FLIGHT INST CHECKED(BOTH)"><p data-raw="FLIGHT INST CHECKED(BOTH)"><span class="l">FLIGHT INST</span><span class="dotfill" aria-hidden="true"></span><span class="r">CHECKED(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n32" id="item-n32" data-key="FLAPS SETTING CONF ____(BOTH)"><p data-raw="FLAPS SETTING CONF ____(BOTH)"><span class="l">FLAPS SETTING CONF</span><span class="dotfill" aria-hidden="true"></span><span class="r">____(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n33" id="item-n33" data-key="RADAR &amp; PRED W/S ON &amp; ON"><p data-raw="RADAR &amp; PRED W/S ON &amp; ON"><span class="l">RADAR &amp; PRED W/S ON &amp;</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n34" id="item-n34" data-key="ENG MODE SEL ____"><p data-raw="ENG MODE SEL ____"><span class="l">ENG MODE SEL</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n35" id="item-n35" data-key="APU OFF"><p data-raw="APU OFF"><span class="l">APU</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n36" id="item-n36" data-key="APU BLEED OFF"><p data-raw="APU BLEED OFF"><span class="l">APU BLEED</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>AFTER START </h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="ANTI ICE ____" data-note-id="n26" id="item-n26"><p data-raw="ANTI ICE ____"><span class="l">ANTI ICE</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ECAM STATUS CHECKED" data-note-id="n27" id="item-n27"><p data-raw="ECAM STATUS CHECKED"><span class="l">ECAM STATUS</span><span aria-hidden="true" class="dotfill"></span><span class="r">CHECKED</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PITCH TRIM ____%" data-note-id="n28" id="item-n28"><p data-raw="PITCH TRIM ____%"><span class="l">PITCH TRIM</span><span aria-hidden="true" class="dotfill"></span><span class="r">____%</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="RUDDER TRIM NEUTRAL" data-note-id="n29" id="item-n29"><p data-raw="RUDDER TRIM NEUTRAL"><span class="l">RUDDER TRIM</span><span aria-hidden="true" class="dotfill"></span><span class="r">NEUTRAL</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FLIGHT CONTROLS CHECKED(BOTH)" data-note-id="n30" id="item-n30"><p data-raw="FLIGHT CONTROLS CHECKED(BOTH)"><span class="l">FLIGHT CONTROLS</span><span aria-hidden="true" class="dotfill"></span><span class="r">CHECKED(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FLIGHT INST CHECKED(BOTH)" data-note-id="n31" id="item-n31"><p data-raw="FLIGHT INST CHECKED(BOTH)"><span class="l">FLIGHT INST</span><span aria-hidden="true" class="dotfill"></span><span class="r">CHECKED(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FLAPS SETTING CONF ____(BOTH)" data-note-id="n32" id="item-n32"><p data-raw="FLAPS SETTING CONF ____(BOTH)"><span class="l">FLAPS SETTING CONF</span><span aria-hidden="true" class="dotfill"></span><span class="r">____(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="RADAR &amp; PRED W/S ON &amp; ON" data-note-id="n33" id="item-n33"><p data-raw="RADAR &amp; PRED W/S ON &amp; ON"><span class="l">RADAR &amp; PRED W/S ON &amp;</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ENG MODE SEL ____" data-note-id="n34" id="item-n34"><p data-raw="ENG MODE SEL ____"><span class="l">ENG MODE SEL</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="APU OFF" data-note-id="n35" id="item-n35"><p data-raw="APU OFF"><span class="l">APU</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="APU BLEED OFF" data-note-id="n36" id="item-n36"><p data-raw="APU BLEED OFF"><span class="l">APU BLEED</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="TAXI" class="topic-box" id="topic9">
-<div class="title-edit-wrap"><h2>TAXI</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<div class="item" data-note-id="n37" id="item-n37" role="button" tabindex="0" data-key="ECAM MEMO">
+<div class="title-edit-wrap"><h2>TAXI</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<div class="item" data-key="ECAM MEMO" data-note-id="n37" id="item-n37" role="button" tabindex="0">
 <!-- Üst satır -->
 <div class="header-line">
 <span class="l">ECAM MEMO</span>
@@ -1321,33 +1327,33 @@ body.light .topic-box h2{
 <li> FLAPS T.O</li>
 <li> T.O CONFIG NORMAL</li>
 </ul>
-<span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></div>
+<span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></div>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="LINE-UP" class="topic-box" id="topic10">
-<div class="title-edit-wrap"><h2>LINE-UP </h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n38" id="item-n38" data-key="T.O RWY ____(BOTH)"><p data-raw="T.O RWY ____(BOTH)"><span class="l">T.O RWY</span><span class="dotfill" aria-hidden="true"></span><span class="r">____(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n39" id="item-n39" data-key="CABIN CREW ADVISED"><p data-raw="CABIN CREW ADVISED"><span class="l">CABIN CREW</span><span class="dotfill" aria-hidden="true"></span><span class="r">ADVISED</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n40" id="item-n40" data-key="PACKS 1 &amp; 2 ____"><p data-raw="PACKS 1 &amp; 2 ____"><span class="l">PACKS 1 &amp; 2</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n41" id="item-n41" data-key="ALL LIGHTS ON"><p data-raw="ALL LIGHTS ON"><span class="l">ALL LIGHTS</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>LINE-UP </h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="T.O RWY ____(BOTH)" data-note-id="n38" id="item-n38"><p data-raw="T.O RWY ____(BOTH)"><span class="l">T.O RWY</span><span aria-hidden="true" class="dotfill"></span><span class="r">____(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="CABIN CREW ADVISED" data-note-id="n39" id="item-n39"><p data-raw="CABIN CREW ADVISED"><span class="l">CABIN CREW</span><span aria-hidden="true" class="dotfill"></span><span class="r">ADVISED</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="PACKS 1 &amp; 2 ____" data-note-id="n40" id="item-n40"><p data-raw="PACKS 1 &amp; 2 ____"><span class="l">PACKS 1 &amp; 2</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ALL LIGHTS ON" data-note-id="n41" id="item-n41"><p data-raw="ALL LIGHTS ON"><span class="l">ALL LIGHTS</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="DEPARTURE CHANGE" class="topic-box" id="topic11">
-<div class="title-edit-wrap"><h2>DEPARTURE CHANGE</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n42" id="item-n42" data-key="RWY &amp; SID &amp; NADP ____"><p data-raw="RWY &amp; SID &amp; NADP ____"><span class="l">RWY &amp; SID &amp; NADP</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n43" id="item-n43" data-key="FLAPS SETTING CONF ____ (BOTH)"><p data-raw="FLAPS SETTING CONF ____ (BOTH)"><span class="l">FLAPS SETTING CONF ____</span><span class="dotfill" aria-hidden="true"></span><span class="r">(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n44" id="item-n44" data-key="T.O SPEEDS &amp; THRUST ____(BOTH)"><p data-raw="T.O SPEEDS &amp; THRUST ____(BOTH)"><span class="l">T.O SPEEDS &amp; THRUST</span><span class="dotfill" aria-hidden="true"></span><span class="r">____(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n45" id="item-n45" data-key="FCU ALT ____"><p data-raw="FCU ALT ____"><span class="l">FCU ALT</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>DEPARTURE CHANGE</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="RWY &amp; SID &amp; NADP ____" data-note-id="n42" id="item-n42"><p data-raw="RWY &amp; SID &amp; NADP ____"><span class="l">RWY &amp; SID &amp; NADP</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FLAPS SETTING CONF ____ (BOTH)" data-note-id="n43" id="item-n43"><p data-raw="FLAPS SETTING CONF ____ (BOTH)"><span class="l">FLAPS SETTING CONF ____</span><span aria-hidden="true" class="dotfill"></span><span class="r">(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="T.O SPEEDS &amp; THRUST ____(BOTH)" data-note-id="n44" id="item-n44"><p data-raw="T.O SPEEDS &amp; THRUST ____(BOTH)"><span class="l">T.O SPEEDS &amp; THRUST</span><span aria-hidden="true" class="dotfill"></span><span class="r">____(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FCU ALT ____" data-note-id="n45" id="item-n45"><p data-raw="FCU ALT ____"><span class="l">FCU ALT</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="APPROACH" class="topic-box" id="topic12">
-<div class="title-edit-wrap"><h2>APPROACH</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n46" id="item-n46" data-key="BARO REF ____(BOTH)"><p data-raw="BARO REF ____(BOTH)"><span class="l">BARO REF</span><span class="dotfill" aria-hidden="true"></span><span class="r">____(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n47" id="item-n47" data-key="SEAT BELTS ON"><p data-raw="SEAT BELTS ON"><span class="l">SEAT BELTS</span><span class="dotfill" aria-hidden="true"></span><span class="r">ON</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n48" id="item-n48" data-key="MINIMUM ____"><p data-raw="MINIMUM ____"><span class="l">MINIMUM</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n49" id="item-n49" data-key="AUTO BRAKE ____"><p data-raw="AUTO BRAKE ____"><span class="l">AUTO BRAKE</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n50" id="item-n50" data-key="ENG MODE SEL ____"><p data-raw="ENG MODE SEL ____"><span class="l">ENG MODE SEL</span><span class="dotfill" aria-hidden="true"></span><span class="r">____</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>APPROACH</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="BARO REF ____(BOTH)" data-note-id="n46" id="item-n46"><p data-raw="BARO REF ____(BOTH)"><span class="l">BARO REF</span><span aria-hidden="true" class="dotfill"></span><span class="r">____(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="SEAT BELTS ON" data-note-id="n47" id="item-n47"><p data-raw="SEAT BELTS ON"><span class="l">SEAT BELTS</span><span aria-hidden="true" class="dotfill"></span><span class="r">ON</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="MINIMUM ____" data-note-id="n48" id="item-n48"><p data-raw="MINIMUM ____"><span class="l">MINIMUM</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="AUTO BRAKE ____" data-note-id="n49" id="item-n49"><p data-raw="AUTO BRAKE ____"><span class="l">AUTO BRAKE</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ENG MODE SEL ____" data-note-id="n50" id="item-n50"><p data-raw="ENG MODE SEL ____"><span class="l">ENG MODE SEL</span><span aria-hidden="true" class="dotfill"></span><span class="r">____</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="LANDING" class="topic-box" id="topic13">
-<div class="title-edit-wrap"><h2>LANDING</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<div class="item" data-note-id="n51" id="item-n51" role="button" tabindex="0" data-key="ECAM MEMO">
+<div class="title-edit-wrap"><h2>LANDING</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<div class="item" data-key="ECAM MEMO" data-note-id="n51" id="item-n51" role="button" tabindex="0">
 <!-- Üst satır -->
 <div class="header-line">
 <span class="l">ECAM MEMO</span>
@@ -1362,27 +1368,27 @@ body.light .topic-box h2{
 <li>SPLRS ARM</li>
 <li> FLAPS FULL or CONF 3</li>
 </ul>
-<span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></div>
+<span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></div>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="AFTER LANDING" class="topic-box" id="topic14">
-<div class="title-edit-wrap"><h2>AFTER LANDING</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n52" id="item-n52" data-key="RADAR &amp; PRED W/S OFF"><p data-raw="RADAR &amp; PRED W/S OFF"><span class="l">RADAR &amp; PRED W/S</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>AFTER LANDING</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="RADAR &amp; PRED W/S OFF" data-note-id="n52" id="item-n52"><p data-raw="RADAR &amp; PRED W/S OFF"><span class="l">RADAR &amp; PRED W/S</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="PARKING" class="topic-box" id="topic15">
-<div class="title-edit-wrap"><h2>PARKING</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n53" id="item-n53" data-key="PARK BRK OR CHOCKS SET"><p data-raw="PARK BRK OR CHOCKS SET"><span class="l">PARK BRK OR CHOCKS</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n54" id="item-n54" data-key="ENGINES OFF"><p data-raw="ENGINES OFF"><span class="l">ENGINES</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n55" id="item-n55" data-key="WING LIGHTS OFF"><p data-raw="WING LIGHTS OFF"><span class="l">WING LIGHTS</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n56" id="item-n56" data-key="FUEL PUMPS OFF"><p data-raw="FUEL PUMPS OFF"><span class="l">FUEL PUMPS</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>PARKING</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="PARK BRK OR CHOCKS SET" data-note-id="n53" id="item-n53"><p data-raw="PARK BRK OR CHOCKS SET"><span class="l">PARK BRK OR CHOCKS</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ENGINES OFF" data-note-id="n54" id="item-n54"><p data-raw="ENGINES OFF"><span class="l">ENGINES</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="WING LIGHTS OFF" data-note-id="n55" id="item-n55"><p data-raw="WING LIGHTS OFF"><span class="l">WING LIGHTS</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="FUEL PUMPS OFF" data-note-id="n56" id="item-n56"><p data-raw="FUEL PUMPS OFF"><span class="l">FUEL PUMPS</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <section aria-label="SECURING THE AIRCRAFT" class="topic-box" id="topic16">
-<div class="title-edit-wrap"><h2>SECURING THE AIRCRAFT</h2><button type="button" class="title-edit-btn" aria-label="Bölüm başlığını düzenle" title="Bölüm başlığını düzenle">🖊️</button></div>
-<button class="item" data-note-id="n57" id="item-n57" data-key="PARKING BRAKE SET"><p data-raw="PARKING BRAKE SET"><span class="l">PARKING BRAKE</span><span class="dotfill" aria-hidden="true"></span><span class="r">SET</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n58" id="item-n58" data-key="ADIRS OFF"><p data-raw="ADIRS OFF"><span class="l">ADIRS</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n59" id="item-n59" data-key="OXYGEN OFF"><p data-raw="OXYGEN OFF"><span class="l">OXYGEN</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n60" id="item-n60" data-key="EMER EXIT LT OFF"><p data-raw="EMER EXIT LT OFF"><span class="l">EMER EXIT LT</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n61" id="item-n61" data-key="EFBs OFF (BOTH)"><p data-raw="EFBs OFF (BOTH)"><span class="l">EFBs OFF</span><span class="dotfill" aria-hidden="true"></span><span class="r">(BOTH)</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
-<button class="item" data-note-id="n62" id="item-n62" data-key="APU AND BATTERIES OFF"><p data-raw="APU AND BATTERIES OFF"><span class="l">APU AND BATTERIES</span><span class="dotfill" aria-hidden="true"></span><span class="r">OFF</span></p><span class="info-btn" role="button" tabindex="0" aria-label="Açıklamayı göster">?</span></button>
+<div class="title-edit-wrap"><h2>SECURING THE AIRCRAFT</h2><button aria-label="Bölüm başlığını düzenle" class="title-edit-btn" title="Bölüm başlığını düzenle" type="button">🖊️</button></div>
+<button class="item" data-key="PARKING BRAKE SET" data-note-id="n57" id="item-n57"><p data-raw="PARKING BRAKE SET"><span class="l">PARKING BRAKE</span><span aria-hidden="true" class="dotfill"></span><span class="r">SET</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="ADIRS OFF" data-note-id="n58" id="item-n58"><p data-raw="ADIRS OFF"><span class="l">ADIRS</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="OXYGEN OFF" data-note-id="n59" id="item-n59"><p data-raw="OXYGEN OFF"><span class="l">OXYGEN</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="EMER EXIT LT OFF" data-note-id="n60" id="item-n60"><p data-raw="EMER EXIT LT OFF"><span class="l">EMER EXIT LT</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="EFBs OFF (BOTH)" data-note-id="n61" id="item-n61"><p data-raw="EFBs OFF (BOTH)"><span class="l">EFBs OFF</span><span aria-hidden="true" class="dotfill"></span><span class="r">(BOTH)</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
+<button class="item" data-key="APU AND BATTERIES OFF" data-note-id="n62" id="item-n62"><p data-raw="APU AND BATTERIES OFF"><span class="l">APU AND BATTERIES</span><span aria-hidden="true" class="dotfill"></span><span class="r">OFF</span></p><span aria-label="Açıklamayı göster" class="info-btn" role="button" tabindex="0">?</span></button>
 <div class="actions"><button class="reset" data-reset="">Reset</button><button class="add-row">Add Row</button></div></section>
 <!-- Madde açıklama Modal (QUESTION/?) -->
 <div aria-labelledby="descTitle" aria-modal="true" class="modal" id="descModal" role="dialog">
@@ -2463,7 +2469,7 @@ document.addEventListener('keydown', (e) => {
   }, true);
 })();
 </script>
-<div aria-hidden="true" id="dualEditOverlay" style="display: none;"><div aria-modal="true" id="dualEditModal" role="dialog"><h4>Add New Item</h4><div class="row"><div style="flex:1"><label for="dualLeft">ITEM</label><input id="dualLeft" placeholder="Example: SEAT BELTS" type="text"></div><div style="flex:1"><label for="dualRight">ACTION</label><input id="dualRight" placeholder="Example: ON / CHECKED" type="text"></div></div><div class="actions"><button id="dualEditOK">Add</button><button id="dualEditCancel">Cancel</button></div></div></div><script>
+<div aria-hidden="true" id="dualEditOverlay" style="display: none;"><div aria-modal="true" id="dualEditModal" role="dialog"><h4>Add New Item</h4><div class="row"><div style="flex:1"><label for="dualLeft">ITEM</label><input id="dualLeft" placeholder="Example: SEAT BELTS" type="text"/></div><div style="flex:1"><label for="dualRight">ACTION</label><input id="dualRight" placeholder="Example: ON / CHECKED" type="text"/></div></div><div class="actions"><button id="dualEditOK">Add</button><button id="dualEditCancel">Cancel</button></div></div></div><script>
 (function(){
   const d = document;
   let currentTopic = null;
@@ -2716,10 +2722,6 @@ document.addEventListener('keydown', (e) => {
   window.addEventListener('load', dedupe);
 })();
 </script>
-
-
-
-
 <script>
 (function editableHeadings(){
   function makeIconButton(label, title){
@@ -2974,8 +2976,6 @@ document.addEventListener('keydown', (e) => {
   });
 })();
 </script>
-
-
 <!-- === Safe buildLeaders override to prevent first-item corruption & duplicate '?' === -->
 <script>
 (function(){
@@ -3073,7 +3073,6 @@ document.addEventListener('keydown', (e) => {
   try { window.buildLeaders(); } catch(e){ console.error(e); }
 })();
 </script>
-
 <style>
 
 #__hardMainNav {
@@ -3091,7 +3090,6 @@ document.addEventListener('keydown', (e) => {
 }
 
 </style>
-
 <style>
 
 @media (max-width: 640px) {
@@ -3111,8 +3109,6 @@ document.addEventListener('keydown', (e) => {
 }
 
 </style>
-
-
 <style>
 /* === Mobile: keep tabs on a single row and auto-shrink equally (preserve colors/design) === */
 @media (max-width: 480px){
