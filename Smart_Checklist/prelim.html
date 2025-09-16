@@ -532,6 +532,13 @@ h3#globalReset{
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="A320 Checklist" name="apple-mobile-web-app-title"/>
 <meta content="#0f1117" name="theme-color"/>
+
+<style>
+/* subtle shake */
+@keyframes shake-kf { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+.topic-box.shake { animation: shake-kf .24s ease-in-out 0s 2; }
+</style>
+
 </head>
 <body>
 <h3 id="globalReset">A320 PRELIMINARY COCKPIT PREPARATION</h3><nav id="__hardMainNav"><a class="__tab __active" href="smart.html">VATSIM CHKL</a><a class="__tab" href="prelim.html">PRELIM CHKL</a><a class="__tab" href="normal.html">NORMAL CHKL</a></nav>
@@ -1299,6 +1306,79 @@ document.addEventListener('DOMContentLoaded', function(){
   document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('.topic-box').forEach(attachObserver);
   });
+})();
+</script>
+
+
+<script>
+// === Helper: find first UNDONE item before given topic ===
+function __findFirstUndoneBeforeTopic(currTopic){
+  try{
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const idx = topics.indexOf(currTopic);
+    if (idx <= 0) return null;
+    for (let t = 0; t < idx; t++){
+      const items = Array.from(topics[t].querySelectorAll('.item'));
+      for (const it of items){
+        if (!it.classList.contains('hidden') && !it.classList.contains('done')){
+          return { topic: topics[t], item: it };
+        }
+      }
+    }
+  }catch(_){}
+  return null;
+}
+</script>
+
+<script>
+// === Cross-topic click guard (capture-phase) ===
+(function(){
+  document.addEventListener('click', function(ev){
+    const item = ev.target && ev.target.closest ? ev.target.closest('.item') : null;
+    if (!item) return;
+    const topic = item.closest && item.closest('.topic-box');
+    if (!topic) return;
+
+    const miss = __findFirstUndoneBeforeTopic(topic);
+    if (miss){
+      ev.preventDefault(); ev.stopPropagation();
+      try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+      try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item.focus && miss.item.focus(); }
+      try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+      if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+    }
+  }, true);
+})();
+</script>
+
+<script>
+// === Space key guard (capture-phase) ===
+// Blocks forward movement when earlier topics contain undone items, before any other handlers run.
+(function(){
+  document.addEventListener('keydown', function(e){
+    if (e.repeat) return;
+    // normalize space detection and ignore when typing in inputs/textareas/selects
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName || '').toUpperCase();
+    const editable = ae && (ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT');
+    if (editable) return;
+
+    if (e.key === ' ' || e.code === 'Space'){
+      // determine current topic from selected or focused item
+      const curr = document.querySelector('.item.selected') || (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item');
+      const currTopic = curr && curr.closest ? curr.closest('.topic-box') : null;
+      const miss = __findFirstUndoneBeforeTopic(currTopic);
+      if (miss){
+        e.preventDefault(); e.stopPropagation();
+        try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+        try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item && miss.item.focus && miss.item.focus(); }
+        try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+        try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+        if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+      }
+    }
+  }, true);
 })();
 </script>
 

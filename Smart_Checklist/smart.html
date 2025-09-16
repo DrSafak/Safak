@@ -3197,6 +3197,24 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 <script>
+
+// === Helper: find first UNDONE item before given topic ===
+function __findFirstUndoneBeforeTopic(currTopic){
+  try{
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const idx = topics.indexOf(currTopic);
+    if (idx <= 0) return null;
+    for (let t = 0; t < idx; t++){
+      const items = Array.from(topics[t].querySelectorAll('.item'));
+      for (const it of items){
+        if (!it.classList.contains('hidden') && !it.classList.contains('done')){
+          return { topic: topics[t], item: it };
+        }
+      }
+    }
+  }catch(_){}
+  return null;
+}
 // === Smart Space Handler (capture-phase) ===
 // Space -> tıkla, sonraki maddeye odaklan, ortala; input alanlarında varsayılanı bozmaz
 (function(){
@@ -3224,6 +3242,19 @@ document.addEventListener('DOMContentLoaded', function(){
           }
           return;
         }
+      }
+    }
+    // Mevcut topic bitti: geçmeden ÖNCE önceki topic'lerde eksik var mı?
+    {
+      const miss = __findFirstUndoneBeforeTopic(topic);
+      if (miss){
+        e.preventDefault(); e.stopPropagation();
+        try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+        try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item.focus && miss.item.focus(); }
+        try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+        try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+        if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+        return;
       }
     }
     // Mevcut topic bitti: sıradaki topic-box içinde ilk uyguna geç
@@ -3368,4 +3399,28 @@ document.addEventListener('DOMContentLoaded', function(){
   }, true);
 })();
 </script>
+
+<script>
+// === Cross-topic guard: block clicking items in later sections if earlier sections have undone items ===
+(function(){
+  document.addEventListener('click', function(ev){
+    const item = ev.target && ev.target.closest ? ev.target.closest('.item') : null;
+    if (!item) return;
+    const topic = item.closest && item.closest('.topic-box');
+    if (!topic) return;
+
+    const miss = __findFirstUndoneBeforeTopic(topic);
+    if (miss){
+      ev.preventDefault(); ev.stopPropagation();
+      try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+      try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item.focus && miss.item.focus(); }
+      try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+      if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+      return;
+    }
+  }, true);
+})();
+</script>
+
 </body></html>
