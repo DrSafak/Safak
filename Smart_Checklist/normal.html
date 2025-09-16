@@ -549,5 +549,81 @@ document.getElementById('globalReset').addEventListener('click', () => {
   document.querySelectorAll('.topic-box').forEach(topic => topic.classList.remove('completed'));
 });
   </script>
+
+<!-- GPT-GLOBAL-RESET-SELECT -->
+<style>
+.item.selected {
+  outline: 3px solid #2196F3 !important; /* mavi çerçeve */
+  box-shadow: 0 0 8px rgba(33,150,243,0.5);
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const items = Array.from(document.querySelectorAll('.item'));
+  if (!items.length) return;
+
+  // Ensure focusable items
+  items.forEach(el => { if (el.tabIndex < 0) el.tabIndex = 0; });
+
+  function clearSelected(){ items.forEach(i => i.classList.remove('selected')); }
+  function selectIndex(i){
+    if (i < 0 || i >= items.length) return;
+    clearSelected();
+    items[i].classList.add('selected');
+    items[i].focus();
+  }
+  function selectFirst(){ selectIndex(0); }
+
+  // Initial ensure first selected
+  if (!items.some(i => i.classList.contains('selected'))) selectFirst();
+
+  // Space: prevent scroll, click selected, then select next
+  document.addEventListener('keydown', function(e){
+    if (e.code === 'Space' && !e.repeat) {
+      const ae = document.activeElement;
+      const tag = (ae && ae.tagName) || '';
+      const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+      if (!isEditable) {
+        e.preventDefault();
+        let idx = items.findIndex(i => i.classList.contains('selected'));
+        if (idx < 0) { selectFirst(); return; }
+        // trigger actual click
+        items[idx].click();
+        // move to next
+        if (idx + 1 < items.length) selectIndex(idx + 1);
+      }
+    }
+  });
+
+  // Mouse click: select clicked, then focus next
+  items.forEach((item, idx) => {
+    item.addEventListener('click', function(){
+      selectIndex(idx);
+      if (idx + 1 < items.length) items[idx + 1].focus();
+    });
+  });
+
+  // After global or section reset, always select VERY FIRST item on the page
+  function afterResetSelectFirst(){
+    // let built-in reset finish (it may add/remove classes)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const firstItem = document.querySelector('.item');
+        if (firstItem) {
+          // re-sync items array with DOM (in case structure changed)
+          clearSelected();
+          firstItem.classList.add('selected');
+          if (firstItem.tabIndex < 0) firstItem.tabIndex = 0;
+          firstItem.focus({ preventScroll: true });
+        }
+      });
+    });
+  }
+
+  const globalReset = document.getElementById('globalReset');
+  if (globalReset) globalReset.addEventListener('click', afterResetSelectFirst);
+  document.querySelectorAll('.reset').forEach(btn => btn.addEventListener('click', afterResetSelectFirst));
+});
+</script>
 </body>
 </html>
