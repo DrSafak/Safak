@@ -302,6 +302,14 @@
   font-size: clamp(12px, 4vw, 28px) !important; /* küçülerek sığsın */
 }
 
+
+/* Auto-scroll highlight */
+.item.autoscroll-highlight{
+  outline: 2px solid rgba(96,165,250,.6);
+  box-shadow: 0 0 0 4px rgba(96,165,250,.24), var(--shadow, 0 4px 7px rgba(0,0,0,.2));
+  transition: outline .2s ease, box-shadow .2s ease;
+}
+
 </style>
 <style>
 /* === Main top nav buttons === */
@@ -880,10 +888,7 @@ function openDesc(key){
 <!-- GPT-INTEGRATION-BLOCK -->
 <style>
 /* Seçili madde vurgusu */
-.item.selected{
-  outline: 3px solid #2196F3 !important;
-  box-shadow: 0 0 8px rgba(33,150,243,.5);
-}
+.item.selected{}
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
@@ -894,12 +899,15 @@ document.addEventListener('DOMContentLoaded', function(){
   items.forEach(el => { if (el.tabIndex < 0) el.tabIndex = 0; });
 
   function clearSelected(){ items.forEach(i => i.classList.remove('selected')); }
-  function selectIndex(i){
-    if (i < 0 || i >= items.length) return;
-    clearSelected();
-    items[i].classList.add('selected');
-    // preventScroll: sayfa kaymasın
-    try { items[i].focus({ preventScroll: true }); } catch(e){ items[i].focus(); }
+  
+function selectIndex(i){
+  if (i < 0 || i >= items.length) return;
+  clearSelected();
+  items[i].classList.add('selected');
+  try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+  if (typeof __centerSelected === 'function') __centerSelected(items[i]);
+}
+); } catch(e){ items[i].focus(); }
   }
   function selectFirst(){ selectIndex(0); }
 
@@ -955,5 +963,344 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('[data-reset]').forEach(btn => btn.addEventListener('click', afterResetSelectFirst));
 });
 </script>
+
+<script>
+// Seçili maddeyi ekranda ortala ve kısa süreli vurgula
+function __centerSelected(el){
+  if (!el) return;
+  try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_) { el.scrollIntoView(true); }
+  try {
+    el.classList.add('autoscroll-highlight');
+    setTimeout(()=> el.classList.remove('autoscroll-highlight'), 500);
+  } catch(_){}
+}
+</script>
+
+
+
+
+
+
+<script>
+// Space tuşu: input alanlarında değilsek sayfa kaymasını tamamen engelle
+// ve seçili/odaklı maddeyi tıkla + bir sonrakine geç + ortala
+document.addEventListener('keydown', function(e){
+  if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName) || '';
+    const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+    if (isEditable) return;
+
+    // Her durumda sayfa kaymasını durdur
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Öncelik: odaktaki .item, yoksa .item.selected, o da yoksa ilk .item
+    let curr = (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item.selected') || document.querySelector('.item');
+    if (!curr) return;
+
+    // Mevcut maddeyi "tıkla"
+    if (typeof curr.click === 'function') curr.click();
+
+    // Aynı topic içinde bir sonrakine odaklan
+    const topic = curr.closest('.topic-box') || document;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    const idx = items.indexOf(curr);
+    const next = (idx >= 0 && idx + 1 < items.length) ? items[idx + 1] : curr;
+
+    // Odak ve ortalama (sayfa kaydırmasını biz kontrol ediyoruz)
+    try { next.focus({ preventScroll: true }); } catch(_){ next.focus(); }
+    setTimeout(function(){
+      const sel = document.querySelector('.item.selected') || next;
+      if (typeof __centerSelected === 'function') __centerSelected(sel);
+    }, 30);
+  }
+});
+</script>
+
+
+<script>
+// === Smart Space Handler (capture-phase) ===
+// Kaynak davranış: smart.html (Space -> tıkla, sonraki maddeye odaklan, ortala)
+// Not: input/textarea/select içinde değilsek varsayılan kaydırmayı iptal eder.
+(function(){
+  function isEditable(ae){
+    if(!ae) return false;
+    const tag = (ae.tagName||'').toUpperCase();
+    return ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT';
+  }
+  
+  function focusNextWithinTopic(curr){
+    // Aday filtresi: gizli/done olmayan
+    function isCandidate(el){
+      return el && !el.classList.contains('hidden') && !el.classList.contains('done');
+    }
+    // Önce mevcut topic içinde sonraki uygunu ara
+    const topic = curr && curr.closest ? curr.closest('.topic-box') : null;
+    if (topic){
+      const items = Array.from(topic.querySelectorAll('.item'));
+      const idx = items.indexOf(curr);
+      for (let i = idx + 1; i < items.length; i++){
+        if (isCandidate(items[i])){
+          try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+          // seçimi görsel olarak taşı
+          document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+          items[i].classList.add('selected');
+          if (typeof __centerSelected === 'function'){
+            setTimeout(()=>__centerSelected(items[i]), 30);
+          }
+          return;
+        }
+      }
+    }
+    // Mevcut topic bitti: sıradaki topic-box içinde ilk uyguna geç
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const tIdx = topic ? topics.indexOf(topic) : -1;
+    for (let t = tIdx + 1; t < topics.length; t++){
+      const cand = Array.from(topics[t].querySelectorAll('.item')).find(isCandidate);
+      if (cand){
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        if (typeof __centerSelected === 'function'){
+          setTimeout(()=>__centerSelected(cand), 30);
+        }
+        return;
+      }
+    }
+    // Hiç aday kalmadıysa: mevcut/ilk elemana geri dön
+    const fallback = document.querySelector('.item') || curr;
+    if (fallback){
+      try { fallback.focus({preventScroll:true}); } catch(_){ fallback.focus(); }
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      fallback.classList.add('selected');
+      if (typeof __centerSelected === 'function'){
+        setTimeout(()=>__centerSelected(fallback), 30);
+      }
+    }
+  }
+); } catch(_) { next && next.focus && next.focus(); }
+    if (typeof __centerSelected === 'function'){
+      setTimeout(function(){
+        const sel = document.querySelector('.item.selected') || next;
+        __centerSelected(sel);
+      }, 30);
+    }
+  }
+  // Tüm .item elemanlarını odaklanabilir yap
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.item').forEach(function(el){
+      if (el.tabIndex < 0) el.tabIndex = 0;
+    });
+    // İlk maddeyi göster & ortala (smart davranışı)
+    var first = document.querySelector('.item');
+    if (first){
+      try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(first);
+    }
+  });
+
+  // Capture-phase: diğer dinleyicilerden önce çalışsın
+  document.addEventListener('keydown', function(e){
+    if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+      var ae = document.activeElement;
+      if (isEditable(ae)) return;
+
+      // Varsayılan sayfa kaydırmayı tamamen durdur
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+      // Öncelik: odaktaki .item -> seçili .item -> ilk .item
+      var curr = (ae && ae.closest && ae.closest('.item')) ||
+                 document.querySelector('.item.selected') ||
+                 document.querySelector('.item');
+      if (!curr) return;
+
+      // "Tıkla" (toggle/select mantığını mevcut koda bırak)
+      if (typeof curr.click === 'function') curr.click();
+
+      // Aynı topic içinde bir sonrakine odaklan ve ortala
+      focusNextWithinTopic(curr);
+      /* HOOK: call completion check after space */
+      try { __checkTopicCompletionAndAdvance(curr.closest('.topic-box')); } catch(_) {}
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+// === Bölüm Tamamlandığında Sonrakine Geç ===
+(function(){
+  function allDone(topic){
+    const items = Array.from(topic.querySelectorAll('.item'));
+    return items.length>0 && items.every(el => el.classList.contains('done'));
+  }
+  function focusFirstOfNext(topic){
+    let next = topic.nextElementSibling;
+    while(next){
+      if (next.classList && next.classList.contains('topic-box')){
+        const first = next.querySelector('.item');
+        if (first){
+          try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+          if (typeof __centerSelected === 'function') __centerSelected(first);
+          break;
+        }
+      }
+      next = next.nextElementSibling;
+    }
+  }
+  document.addEventListener('click', function(e){
+    const item = e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    // Küçük gecikmeyle kontrol et (class 'done' eklendikten sonra)
+    setTimeout(function(){
+      if (allDone(topic)) focusFirstOfNext(topic);
+    }, 40);
+  });
+})();
+</script>
+
+
+<script>
+// Bölüm tamamlanınca otomatik olarak sonraki bölümün ilk maddesini seç
+
+
+function __checkTopicCompletionAndAdvance(topic){
+  if (!topic) return;
+  const items = Array.from(topic.querySelectorAll('.item'));
+  const hidden = items.filter(i => i.classList.contains('hidden'));
+  const allHidden = (items.length > 0 && hidden.length === items.length) || topic.classList.contains('completed');
+  if (allHidden){
+    // Find the next .topic-box
+    let nextTopic = topic.nextElementSibling;
+    while (nextTopic && !(nextTopic.classList && nextTopic.classList.contains('topic-box'))) {
+      nextTopic = nextTopic.nextElementSibling;
+    }
+    if (nextTopic){
+      // First item of the next topic, regardless of hidden/done
+      const cand = nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+if (nextTopic){
+      // First available (not hidden) item
+      const cand = Array.from(nextTopic.querySelectorAll('.item')).find(el => !el.classList.contains('hidden') && !el.classList.contains('done')) || nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+ kontrol et
+document.addEventListener('click', function(e){
+  const item = e.target.closest && e.target.closest('.item');
+  if (item){
+    const topic = item.closest('.topic-box');
+    setTimeout(()=>__checkTopicCompletionAndAdvance(topic), 50);
+  }
+});
+</script>
+
+
+<script>
+// Ensure first item selected on load
+document.addEventListener('DOMContentLoaded', function(){
+  var first = document.querySelector('.item');
+  if (first){
+    document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected==='function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- İlk açılışta: en üstteki *görünür* maddeyi seçili getir ---
+document.addEventListener('DOMContentLoaded', function(){
+  // Tüm .item'leri odaklanabilir yap
+  document.querySelectorAll('.item').forEach(function(el){
+    if (el.tabIndex < 0) el.tabIndex = 0;
+  });
+  // Seçimleri temizle
+  document.querySelectorAll('.item.selected').forEach(function(el){
+    el.classList.remove('selected');
+  });
+  // İlk görünür madde (.hidden olmayan) -> yoksa ilk .item
+  var first = document.querySelector('.topic-box .item:not(.hidden)') || document.querySelector('.item');
+  if (first){
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected === 'function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- Bölüm tamamlanınca bir sonrakine otomatik geçiş (sağlam gözlemci) ---
+(function(){
+  function isTopicCompleted(topic){
+    if (!topic) return false;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    if (!items.length) return false;
+    const hiddenCount = items.filter(i => i.classList.contains('hidden')).length;
+    return hiddenCount === items.length || topic.classList.contains('completed');
+  }
+  function firstCandidateIn(topic){
+    if (!topic) return null;
+    return Array.from(topic.querySelectorAll('.item')).find(i => !i.classList.contains('hidden') && !i.classList.contains('done')) || topic.querySelector('.item');
+  }
+  function advanceToNextTopic(fromTopic){
+    if (!fromTopic) return;
+    let next = fromTopic.nextElementSibling;
+    while (next && !(next.classList && next.classList.contains('topic-box'))) next = next.nextElementSibling;
+    const cand = firstCandidateIn(next);
+    if (cand){
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      cand.classList.add('selected');
+      try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(cand);
+    }
+  }
+  // Click sonrası küçük gecikmeyle kontrol
+  document.addEventListener('click', function(e){
+    const item = e.target.closest && e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    setTimeout(function(){
+      if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+    }, 40);
+  }, true);
+  // Her topic için gözlemci: .item class değişimlerini ve topic.class değişimini izle
+  function attachObserver(topic){
+    try{
+      const obs = new MutationObserver(function(){
+        if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+      });
+      obs.observe(topic, {attributes:true, attributeFilter:['class'], subtree:true});
+    }catch(_){}
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.topic-box').forEach(attachObserver);
+  });
+})();
+</script>
+
 </body>
 </html>

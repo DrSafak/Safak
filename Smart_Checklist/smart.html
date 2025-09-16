@@ -3166,11 +3166,206 @@ document.addEventListener('keydown', (e) => {
   document.querySelectorAll('.item .sub-list [tabindex]').forEach(el => el.setAttribute('tabindex', '-1'));
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  var firstItem = document.querySelector('.item');
-  if (firstItem) {
-    firstItem.classList.add('autoscroll-highlight');
-    firstItem.focus();
+function __centerSelected(el){
+  if (!el) return;
+  try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_) { el.scrollIntoView(true); }
+  try { el.classList.add('autoscroll-highlight'); setTimeout(()=>el.classList.remove('autoscroll-highlight'), 500); } catch(_){}
+}
+</script>
+
+
+<script>
+// --- İlk açılışta: en üstteki *görünür* maddeyi seçili getir ---
+document.addEventListener('DOMContentLoaded', function(){
+  // Tüm .item'leri odaklanabilir yap
+  document.querySelectorAll('.item').forEach(function(el){
+    if (el.tabIndex < 0) el.tabIndex = 0;
+  });
+  // Seçimleri temizle
+  document.querySelectorAll('.item.selected').forEach(function(el){
+    el.classList.remove('selected');
+  });
+  // İlk görünür madde (.hidden olmayan) -> yoksa ilk .item
+  var first = document.querySelector('.topic-box .item:not(.hidden)') || document.querySelector('.item');
+  if (first){
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected === 'function') __centerSelected(first);
   }
 });
-</script></body></html>
+</script>
+
+
+<script>
+// === Smart Space Handler (capture-phase) ===
+// Space -> tıkla, sonraki maddeye odaklan, ortala; input alanlarında varsayılanı bozmaz
+(function(){
+  function isEditable(ae){
+    if(!ae) return false;
+    const tag = (ae.tagName||'').toUpperCase();
+    return ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT';
+  }
+  function focusNextWithinTopic(curr){
+    // Aday filtresi: gizli/done olmayan
+    function isCandidate(el){
+      return el && !el.classList.contains('hidden') && !el.classList.contains('done');
+    }
+    const topic = curr && curr.closest ? curr.closest('.topic-box') : null;
+    if (topic){
+      const items = Array.from(topic.querySelectorAll('.item'));
+      const idx = items.indexOf(curr);
+      for (let i = idx + 1; i < items.length; i++){
+        if (isCandidate(items[i])){
+          try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+          document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+          items[i].classList.add('selected');
+          if (typeof __centerSelected === 'function'){
+            setTimeout(()=>__centerSelected(items[i]), 30);
+          }
+          return;
+        }
+      }
+    }
+    // Mevcut topic bitti: sıradaki topic-box içinde ilk uyguna geç
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const tIdx = topic ? topics.indexOf(topic) : -1;
+    for (let t = tIdx + 1; t < topics.length; t++){
+      const cand = Array.from(topics[t].querySelectorAll('.item')).find(el => !el.classList.contains('hidden') && !el.classList.contains('done'));
+      if (cand){
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        if (typeof __centerSelected === 'function'){
+          setTimeout(()=>__centerSelected(cand), 30);
+        }
+        return;
+      }
+    }
+  }
+
+  // Capture-phase: diğer dinleyicilerden önce çalışsın
+  document.addEventListener('keydown', function(e){
+    if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+      var ae = document.activeElement;
+      if (isEditable(ae)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+      // Öncelik: odaktaki .item -> seçili .item -> ilk .item
+      var curr = (ae && ae.closest && ae.closest('.item')) ||
+                 document.querySelector('.item.selected') ||
+                 document.querySelector('.item');
+      if (!curr) return;
+      if (typeof curr.click === 'function') curr.click();
+      if (window.__BLOCK_LAST_CLICK){ 
+        // Guard tarafından engellendi; ilerleme yok, bayrağı temizle
+        try { window.__BLOCK_LAST_CLICK = false; } catch(_){}
+      } else { 
+        focusNextWithinTopic(curr);
+      }
+      // Güvenlik: konu tamamlandıysa hemen sonraki konuya atla
+      try { __checkTopicCompletionAndAdvance(curr.closest('.topic-box')); } catch(_){}
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+// --- Bölüm tamamlanınca bir sonrakine otomatik geçiş (sağlam gözlemci) ---
+(function(){
+  function isTopicCompleted(topic){
+    if (!topic) return false;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    if (!items.length) return false;
+    // smart: 'done' sınıfı ile takip ediliyor; 'completed' da kullanılabilir
+    const doneCount = items.filter(i => i.classList.contains('done') || i.classList.contains('hidden')).length;
+    return doneCount === items.length || topic.classList.contains('completed');
+  }
+  function firstCandidateIn(topic){
+    if (!topic) return null;
+    return Array.from(topic.querySelectorAll('.item')).find(i => !i.classList.contains('hidden') && !i.classList.contains('done')) || topic.querySelector('.item');
+  }
+  function advanceToNextTopic(fromTopic){
+    if (!fromTopic) return;
+    let next = fromTopic.nextElementSibling;
+    while (next && !(next.classList && next.classList.contains('topic-box'))) next = next.nextElementSibling;
+    const cand = firstCandidateIn(next);
+    if (cand){
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      cand.classList.add('selected');
+      try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(cand);
+    }
+  }
+  // Click sonrası küçük gecikmeyle kontrol
+  document.addEventListener('click', function(e){
+    const item = e.target.closest && e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    setTimeout(function(){
+      if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+    }, 40);
+  }, true);
+  // Her topic için gözlemci: .item class değişimlerini ve topic.class değişimini izle
+  function attachObserver(topic){
+    try{
+      const obs = new MutationObserver(function(){
+        if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+      });
+      obs.observe(topic, {attributes:true, attributeFilter:['class'], subtree:true});
+    }catch(_){}
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.topic-box').forEach(attachObserver);
+  });
+})();
+</script>
+
+
+
+
+<script>
+// === Last item guard (prevent finish if earlier undone) ===
+(function(){
+  function isUndone(el){
+    return el && !el.classList.contains('done') && !el.classList.contains('hidden');
+  }
+  function firstUndoneIndex(items){
+    for (let i=0;i<items.length;i++){ if (isUndone(items[i])) return i; }
+    return -1;
+  }
+  // Capture-phase: öğe tıklamayı yakala ve gerekirse engelle
+  document.addEventListener('click', function(ev){
+    const itemBtn = ev.target.closest && ev.target.closest('.item');
+    if (!itemBtn) return;
+    const topic = itemBtn.closest('.topic-box');
+    if (!topic) return;
+
+    const items = Array.from(topic.querySelectorAll('.item'));
+    const idx   = items.indexOf(itemBtn);
+    const lastIdx = items.length - 1;
+
+    if (idx === lastIdx){
+      const fu = firstUndoneIndex(items.slice(0, lastIdx));
+      if (fu !== -1){
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (typeof ev.stopImmediatePropagation === 'function') ev.stopImmediatePropagation();
+
+        // global bayrak: Space handler ileri gitmesin
+        try { window.__BLOCK_LAST_CLICK = true; } catch(_){}
+
+        // Shake + ilk eksik maddeye odak/kaydır
+        const target = items[fu];
+        try { topic.classList.add('shake'); setTimeout(()=>topic.classList.remove('shake'), 500); } catch(_){}
+        try { target && target.focus && target.focus({preventScroll:true}); } catch(_){ target && target.focus && target.focus(); }
+        try { target && target.scrollIntoView && target.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+        return;
+      }
+    }
+  }, true);
+})();
+</script>
+</body></html>
