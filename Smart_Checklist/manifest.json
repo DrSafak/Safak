@@ -1,7 +1,7 @@
 {
   "name": "Fenix A320 Smart Checklist",
   "short_name": "A320 Checklist",
-  "start_url": "index.html",
+  "start_url": "smart.html",
   "display": "standalone",
   "background_color": "#0f1117",
   "theme_color": "#0f1117",
