@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>A320 PRELIMINARY COCKPIT PREPARATION BLUE</title>
+<!-- App Icons & Manifest -->
+<link href="icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root{
+      --bg:#0f1117;
+      --panel:#1c1f26;
+      --item:#2a2f3a;
+      --item-hover:#3b4252;
+      --text:#e5e7eb;
+      --title:#ffb347;
+      --header:#048CFC;
+      --shadow:0 4px 7px rgba(0,0,0,.2);
+      --radius-lg:16px;
+      --radius-md:10px;
+      --accent:#60a5fa;
+      --success:#22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align:center;
+    }
+
+    h3{
+      font-family:Oswald, sans-serif;
+      font-weight:500;
+      font-size:28px;
+      margin: clamp(32px, 5vh, 80px) auto 24px;
+      width:min(700px, 92vw);
+      padding:12px 16px;
+      border-radius:20px;
+      background:var(--header);
+      box-shadow:var(--shadow);
+    }
+
+    .topic-box{
+      width:min(700px, 92vw);
+      margin:24px auto 40px;
+      padding:16px;
+      border-radius:var(--radius-lg);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+      text-align:left;
+      position: relative;
+    }
+
+    .topic-box h2{
+      font-family: Oswald, sans-serif;
+      color: var(--title);
+      margin: 8px 4px 14px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .item{
+      display:block;
+      width:100%;
+      padding:10px 14px;
+      margin:8px 0;
+      border:none;
+      border-radius:var(--radius-md);
+      background:var(--item);
+      color:inherit;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      text-align:left;
+      position: relative;
+    }
+    .item:hover{ background:var(--item-hover); }
+
+    .item p {
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:5px;
+      line-height:1.35;
+      padding-right:80px; /* sağdaki rozet ve ? için alan */
+    }
+
+    .dotfill {
+      flex: 1 1 auto;
+      border-bottom: 2px dotted rgba(255,255,255,.45);
+      margin-left: -4px;
+      margin-right: -4px;
+      transform: translateY(-2px);
+      align-self: flex-end;
+    }
+
+    .info-btn{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform: translateY(-50%);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      font-weight:700;
+      font-size:14px;
+      line-height:1;
+      cursor:pointer;
+      user-select:none;
+    }
+    .info-btn:hover{ background:rgba(255,255,255,.16); }
+
+    .reset{
+      display:block;
+      margin: 12px auto 0;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px; 
+      padding: 8px 12px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:#fff;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .reset:hover{ background:#1d4ed8; }
+
+    .hidden{ display:none !important; }
+    .completed{
+      outline:2px solid #22c55e55;
+      box-shadow:0 0 0 3px #22c55e22 inset, var(--shadow);
+    }
+  
+    #globalReset { cursor: pointer; }
+
+    /* Madde açıklama modalı */
+    .modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal.show{ display:flex; }
+
+    .modal-card{
+      width:min(720px, 96vw);
+      max-height: 85vh;
+      overflow:auto;
+      background: #0f141b;
+      color: var(--text);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .modal-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: #101826;
+      position: sticky;
+      top:0;
+    }
+    .modal-title{
+      font-family: Oswald, sans-serif;
+      font-size: 20px;
+      color: var(--title);
+    }
+    .modal-body{
+      padding:16px 18px 22px;
+      line-height:1.55;
+      white-space: pre-wrap;
+      text-align: justify;
+    }
+    .modal-body ul { list-style-type: disc; padding-left: 20px; margin: 0; }
+    .modal-body li { margin-bottom: 4px; }
+
+    .close-btn{
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-size:22px;
+      cursor:pointer;
+      width:32px; height:32px;
+      border-radius:8px;
+    }
+    .close-btn:hover{ background:rgba(255,255,255,.08); }
+
+    .modal-footer{
+      padding:10px 18px 16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .copy-btn{
+      border:none;
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      background: #1f2937;
+      color: var(--text);
+    }
+    .copy-btn:hover{ background:#374151; }
+	
+    .role-btn {
+      position:absolute;
+      right:45px;           /* ? butonundan hemen önce */
+      top:50%;
+      transform: translateY(-50%);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:40px;
+      height:28px;
+      border-radius:20%;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      font-size:11px;
+      font-weight: 600;
+      cursor:default;
+      line-height: 1.2;
+      user-select:none;
+    }
+
+    /* Sağ üst “info” butonu — sadece #topic1 */
+    #topic1 .doc-info-btn {
+      position:absolute;
+      top:10px;
+      right:12px;
+      width:50px;
+      height:32px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:600;
+      cursor:pointer;
+      z-index:2;
+    }
+    #topic1 .doc-info-btn:hover { background:rgba(255,255,255,.12); }
+
+    /* Doküman Özellikleri popup */
+    #docInfoModal {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+    }
+    #docInfoModal.show { display:flex; }
+
+    #docInfoModal .box {
+      width:min(600px,90vw);
+      background:#0f141b;
+      color:var(--text);
+      border-radius:12px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      text-align:justify;
+    }
+    #docInfoModal h4 { margin-top:0; color:var(--title); }
+    #docInfoModal .close {
+      float:right;
+      background:none;
+      border:none;
+      color:var(--text);
+      font-size:20px;
+      cursor:pointer;
+    }
+
+    .completed h2 { color: #22c55e; }
+    
+  
+#globalReset {
+  white-space: nowrap !important;       /* yazı tek satırda kalsın */
+  overflow: hidden !important;          /* taşmayı gizle */
+  text-overflow: ellipsis !important;   /* sığmazsa üç nokta */
+  font-size: clamp(12px, 4vw, 28px) !important; /* küçülerek sığsın */
+}
+
+
+/* Auto-scroll highlight */
+.item.autoscroll-highlight{
+  outline: 2px solid rgba(96,165,250,.6);
+  box-shadow: 0 0 0 4px rgba(96,165,250,.24), var(--shadow, 0 4px 7px rgba(0,0,0,.2));
+  transition: outline .2s ease, box-shadow .2s ease;
+}
+
+</style>
+<style>
+/* === Main top nav buttons === */
+#__hardMainNav{
+  width: min(700px, 92vw);
+  margin: 10px auto 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 50;
+}
+#__hardMainNav .__tab{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+/* Color theme */
+#__hardMainNav .__tab:nth-child(1) { background:#1f3b73; } /* VATSIM: deep navy */
+#__hardMainNav .__tab:nth-child(2) { background:#b35400; } /* PRELIM: burnt orange */
+#__hardMainNav .__tab:nth-child(3) { background:#157347; } /* NORMAL: deep green */
+#__hardMainNav .__tab:nth-child(1):hover{ background:#1a315f; }
+#__hardMainNav .__tab:nth-child(2):hover{ background:#984800; }
+#__hardMainNav .__tab:nth-child(3):hover{ background:#125f3a; }
+#__hardMainNav .__tab.__active{ filter:brightness(.92); }
+</style>
+<style>
+/* removed old hard nav */
+#__hardMainNav{
+  width: min(700px, 92vw) !important;
+  margin: 10px auto 20px !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  z-index: 50 !important;
+}
+#__hardMainNav .__tab{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 140px !important;
+  padding: 10px 14px !important;
+  border-radius: var(--radius-lg) !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  background: #007bff !important;
+  color: #fff !important;
+  box-shadow: var(--shadow) !important;
+}
+#__hardMainNav .__tab.__active{ background:#005ec0 !important; }
+#__hardMainNav .__tab:hover{ filter: brightness(1.05) !important; }
+</style>
+<style>
+/* === Single, clean title bar === */
+#topTitleBar{
+  width: min(700px, 92vw);
+  margin: clamp(32px, 5vh, 80px) auto 24px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  background: #007bff;
+  color: #fff;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+#topTitleBar #globalReset{
+  display: inline;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+}
+#topTitleBar .title-edit-btn{
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  vertical-align: middle;
+}
+
+/* Neutralize any old wrap styles (if remains from cache fragments) */
+#globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+</style>
+<style>
+/* === Aviation-themed nav colors for __hardMainNav/__tab structure === */
+#__hardMainNav .__tab:nth-child(1) { background: #007bff !important; } /* VATSIM */
+#__hardMainNav .__tab:nth-child(2) { background: #fd7e14 !important; } /* PRELIM */
+#__hardMainNav .__tab:nth-child(3) { background: #28a745 !important; } /* NORMAL */
+
+#__hardMainNav .__tab:nth-child(1):hover { background: #0069d9 !important; }
+#__hardMainNav .__tab:nth-child(2):hover { background: #e8590c !important; }
+#__hardMainNav .__tab:nth-child(3):hover { background: #218838 !important; }
+
+#__hardMainNav .__tab.__active { filter: brightness(0.9) !important; }
+</style>
+<style>
+/* === Theme 3: Cockpit Deep (deep tones, high contrast) === */
+#__hardMainNav .__tab:nth-child(1){ background:#1f3b73 !important; } /* VATSIM: deep navy */
+#__hardMainNav .__tab:nth-child(2){ background:#b35400 !important; } /* PRELIM: burnt orange */
+#__hardMainNav .__tab:nth-child(3){ background:#157347 !important; } /* NORMAL: deep green */
+
+#__hardMainNav .__tab:nth-child(1):hover{ background:#1a315f !important; }
+#__hardMainNav .__tab:nth-child(2):hover{ background:#984800 !important; }
+#__hardMainNav .__tab:nth-child(3):hover{ background:#125f3a !important; }
+
+#__hardMainNav .__tab.__active{ filter:brightness(.92) !important; }
+</style>
+<style>
+#__hardMainNav {
+  width: min(700px, 92vw) !important;
+  margin: 10px auto 20px !important;
+  display: flex !important;
+  justify-content: space-between !important; /* sağa sola yasla */
+  flex-wrap: wrap !important;               /* taşma olursa alta geçsin */
+  gap: 8px !important;                      /* buton arası boşluk */
+  z-index: 50 !important;
+}
+#__hardMainNav .__tab {
+  flex: 1 1 auto !important;    /* esnek genişlik */
+  text-align: center !important;
+}
+</style>
+<style>
+@media (max-width: 640px) {
+  #__hardMainNav {
+    display: flex !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;   /* alt satıra geçmesin */
+    gap: 6px !important;
+  }
+  #__hardMainNav .__tab {
+    flex: 1 1 0 !important;         /* eşit boy küçülsün */
+    min-width: 0 !important;        /* daralmaya izin ver */
+    padding: 8px 4px !important;    /* daha dar padding */
+    font-size: clamp(9px, 2.2vw, 12px) !important; /* mobilde küçülür */
+    text-align: center !important;
+  }
+}
+</style>
+<style>
+/* === Mobile: keep tabs on a single row and auto-shrink equally (preserve colors/design) === */
+@media (max-width: 480px){
+  #__hardMainNav{
+    width: min(700px, 92vw) !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;          /* tek satırda kalsın */
+    justify-content: space-between !important;
+    gap: 4px !important;                   /* daha dar boşluk */
+  }
+  #__hardMainNav .__tab{
+    flex: 1 1 0 !important;                /* eşit ve orantılı küçülsün */
+    min-width: 0 !important;               /* 140px kısıtı geçersiz kalsın */
+    padding: 8px 6px !important;           /* daha küçük padding */
+    font-size: clamp(10px, 3.2vw, 12px) !important; /* yazı da küçülsün */
+    line-height: 1.1 !important;
+    border-radius: var(--radius-lg) !important;      /* görsel dili koru */
+    /* Arka plan ve renkler önceki kurallardan gelsin — burada değiştirmiyoruz */
+  }
+}
+</style>
+<style>
+/* === Unified Blue Header (from index) === */
+h3#globalReset{
+  display:block !important;
+  width:min(700px, 92vw) !important;
+  margin: clamp(32px, 5vh, 80px) auto 24px !important;
+  padding: 12px 16px !important;
+  border-radius: 20px !important;
+  background: #007bff !important;
+  color:#fff !important;
+  box-shadow: 0 4px 7px rgba(0,0,0,.2) !important;
+  text-align:center !important;
+  white-space: nowrap !important;        /* tek satır */
+  overflow: hidden !important;           /* taşmayı gizle */
+  text-overflow: clip !important;        /* üç noktasız kes */
+  font-family: Oswald, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(12px, 4vw, 28px) !important; /* sığacak kadar küçülsün */
+}
+/* Guard: remove any inner/wrapper transforms that might duplicate styling */
+#globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+</style>
+<style>
+/* === Completed section titles: keep green (already defined) and ensure single-line on mobile === */
+@media (max-width: 640px){
+  .topic-box h2{
+    white-space: nowrap !important;    /* tek satır */
+    overflow: hidden !important;       /* taşma gizle */
+    text-overflow: clip !important;    /* üç nokta istemiyorsan clip */
+    font-size: clamp(12px, 4vw, 22px) !important; /* sığacak kadar küçülsün */
+    line-height: 1.2 !important;
+  }
+}
+</style>
+<!-- App Icons & Manifest -->
+<link href="icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<!-- App Icons & Manifest -->
+<link href="icon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="icon/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="icon/favicon-16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="icon/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="A320 Checklist" name="apple-mobile-web-app-title"/>
+<meta content="#0f1117" name="theme-color"/>
+
+<style>
+/* subtle shake */
+@keyframes shake-kf { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+.topic-box.shake { animation: shake-kf .24s ease-in-out 0s 2; }
+</style>
+
+</head>
+<body>
+<h3 id="globalReset">A320 PRELIMINARY COCKPIT PREPARATION</h3><nav id="__hardMainNav"><a class="__tab __active" href="smart.html">VATSIM CHKL</a><a class="__tab" href="prelim.html">PRELIM CHKL</a><a class="__tab" href="normal.html">NORMAL CHKL</a></nav>
+<section aria-label="SAFETY EXTERIOR INSPECTION" class="topic-box" id="topic1">
+<h2>SAFETY EXTERIOR INSPECTION</h2>
+<button class="doc-info-btn" id="openDocInfo">Info</button>
+<button class="item" tabindex="0"><p>WHEEL CHOCKS  CHECK</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>LANDING GEAR DOORS  CHECK POSITION</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>APU AREA  CHECK</p><span class="role-btn">CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="AIRCRAFT SETUP" class="topic-box" id="topic2">
+<h2>AIRCRAFT SETUP</h2>
+<button class="item" tabindex="0"><p>ENG 1, 2 MASTER LEVERS  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>ENG MODE Selector  NORM</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>* WEATHER RADAR  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>* WINDSHEAR/PWS sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>L/G lever  DOWN</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>Both WIPER Selectors  OFF</p><span class="role-btn">CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="BATTERIES/EXTERNAL POWER" class="topic-box" id="topic3">
+<h2>BATTERIES/EXTERNAL POWER</h2>
+<button class="item" tabindex="0"><p>BAT   CHECK AUTO</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>EXT PWR pb  ON</p><span class="role-btn">CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="APU FIRE TEST/APU START" class="topic-box" id="topic4">
+<h2>APU FIRE TEST/APU START</h2>
+<button class="item" tabindex="0"><p>RMP CHECK ON/SET</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>ACP CHECK ON/SET</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>APU FIRE TEST  PERFORM</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>APU (if required)  START</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>AIR COND Panel (When the APU is AVAIL)  SET</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>* EXT PWR pb  AS RQRD</p><span class="role-btn">CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="ADIRS" class="topic-box" id="topic5">
+<h2>ADIRS</h2>
+<button class="item" tabindex="0"><p>* All IR MODE Selectors  NAV</p><span class="role-btn">CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="COCKPIT LIGHTS" class="topic-box" id="topic6">
+<h2>COCKPIT LIGHTS</h2>
+<button class="item" tabindex="0"><p>* COCKPIT LIGHTS   AS RQRD</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="EFB INITIALIZATION" class="topic-box" id="topic7">
+<h2>EFB/ACARS INITIALIZATION</h2>
+<button class="item" tabindex="0"><p>* DATABASE VALID  CHECK</p><span class="role-btn">PF</span></button>
+<button class="item" tabindex="0"><p>* ACARS FLT INIT  REQUEST</p><span class="role-btn">PF</span></button>
+<button class="item" tabindex="0"><p>ALL EFB  START</p><span class="role-btn">PF<br/>PM</span></button>
+<button class="item" tabindex="0"><p>EFB Version and Database  CHECK</p><span class="role-btn">PF<br/>PM</span></button>
+<button class="item" tabindex="0"><p>* ENGINE &amp; AIRCRAFT TYPE (For operations with the ACARS)  CHECK</p><span class="role-btn">PF</span></button>
+<button class="item" tabindex="0"><p>* FLT NBR &amp; FROM/TO (For operations with the ACARS)  INSERT/CHECK</p><span class="role-btn">PF</span></button>
+<button class="item" tabindex="0"><p>* EFB FLIGHT INITIALIZE  CHECK/ACTIVATE FLT PLN </p><span class="role-btn">PF<br/>PM</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="AIRCRAFT ACCEPTANCE" class="topic-box" id="topic8">
+<h2>AIRCRAFT ACCEPTANCE</h2>
+<button class="item" tabindex="0"><p>* RCL pb  PRESS 3 SEC</p><span class="role-btn">CM1</span></button>
+<button class="item" tabindex="0"><p>* LOGBOOK AND MEL/CDL ITEMS  CHECK</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>AIRCRAFT CONFIG SUMMARY  CHECK</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>* OEB  CHECK</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="PRELIMINARY PERFORMANCE DETERMINATION" class="topic-box" id="topic9">
+<h2>PRELIMINARY PERFORMANCE DETERMINATION</h2>
+<button class="item" tabindex="0"><p>* AIRFIELD DATA  OBTAIN</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>* NAV CHARTS  PREPARE</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>* MEL/CDL ITEMS   CHECK ACTIVATED</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>* PRELIM T.O PERF DATA  COMPUTE</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>* PRELIM T.O PERF DATA  CROSSCHECK</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="BEFORE WALKAROUND" class="topic-box" id="topic10">
+<h2>BEFORE WALKAROUND</h2>
+<button class="item" tabindex="0"><p>* ECAM OXY PRESS/HYD QTY/ENG OIL QTY   CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* BRAKE TEMP  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>FLAPS   CHECK POSITION</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* SPEED BRAKE lever   CHECK RET AND DISARMED</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* ACCU PRESS  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* PARK BRK handle  ON</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* BRAKES PRESS indicator  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>EMER EQPT  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>RAIN REPELLENT  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>C/B PANELS  CHECK</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* GEAR PINS  CHECK ONBOARD/STOWED</p><span class="role-btn">PM</span></button>
+<button class="item" tabindex="0"><p>* EXTERIOR WALKAROUND  PERFORM</p><span class="role-btn">PM</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="SECURING THE AIRCRAFT" class="topic-box" id="topic11">
+<h2>SECURING THE AIRCRAFT</h2>
+<button class="item" tabindex="0"><p>PARK BRK handle  ON</p><span class="role-btn">CM1</span></button>
+<button class="item" tabindex="0"><p>EXTERIOR LIGHTS  AS RQRD</p><span class="role-btn">CM1</span></button>
+<button class="item" tabindex="0"><p>All IR MODE selectors  OFF</p><span class="role-btn">CM1</span></button>
+<button class="item" tabindex="0"><p>OXYGEN CREW SUPPLY pb-sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>APU BLEED pb-sw  OFF</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>EXT PWR pb   AS RQRD</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>APU MASTER SW pb-sw  OFF</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>EMER EXIT LT sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>NO PORTABLE ELEC DEVICE sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>SIGNS sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>EFB applications  CLOSE</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>All EFB  SWITCH/OFF</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>MAINT BUS sw   AS RQRD</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>BAT 1 pb-sw + BAT 2 pb-sw  OFF</p><span class="role-btn">CM2</span></button>
+<button class="item" tabindex="0"><p>WINDOWS  CHECK/CLOSED</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="item" tabindex="0"><p>SECURING THE AIRCRAFT C/L  COMPLETE</p><span class="role-btn">CM1<br/>CM2</span></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<!-- Madde açıklama Modal (QUESTION/?) -->
+<div aria-labelledby="descTitle" aria-modal="true" class="modal" id="descModal" role="dialog">
+<div class="modal-card">
+<div class="modal-header">
+<div class="modal-title" id="descTitle">Başlık</div>
+<button aria-label="Kapat" class="close-btn">×</button>
+</div>
+<div class="modal-body" id="descBody">İçerik</div>
+<div class="modal-footer">
+<button class="copy-btn" id="copyBtn">Complete</button>
+</div>
+</div>
+</div>
+<!-- Doküman Özellikleri Popup (sade, içerik senin) -->
+<div id="docInfoModal">
+<div class="box">
+<button class="close" id="closeDocInfo">×</button>
+<h4>Information</h4>
+<div id="docInfoContent">
+<p><b>The “?” icon next to each item displays the FCOM information or warning related to that item.</b> When you click an item, it hides and is marked as completed. Hidden items can be shown again by clicking the blue header at the top or by pressing the Reset button at the bottom of each section.</p>
+<p><b>Version:</b> 1.0</p>
+<p><b>Date:</b> 05.09.2025</p>
+<p><b>Prepared by:</b> Safak </p>
+<p><b>Note:</b> ONLY FOR FLIGHT SIMULATION.</p>
+</div>
+</div>
+</div>
+<script>
+    let currentItemEl = null;
+
+    const normalizeKey = (s) => (s || "").replace(/\s+/g,' ').trim();
+
+    const FCOM_NOTES_RAW = { "WHEEL CHOCKS  CHECK": "If the wheel chocks are not in position, the flight crew must check that the parking brake is set with sufficient accumulator pressure.",
+      "LANDING GEAR DOORS  CHECK POSITION": "If any landing gear door is open, do not pressurize the hydraulic systems until clearance is obtained from ground personnel.",
+      "APU AREA  CHECK": "Observe that the APU inlet and outlet are clear",
+      "ENG 1, 2 MASTER LEVERS  OFF": "The ENG MASTER levers must be set to OFF after shutdown and during securing. This positively stops fuel flow and prevents any inadvertent engine start or thrust application while on ground. It ensures the aircraft is safe for parking and ground operations, while engine fire protection remains available.",
+      "ENG MODE Selector  NORM": "With the aircraft secured and engines off, the ENG MODE selector must remain in NORM. This is the default standby position, ensuring the FADEC is in normal mode while preventing inadvertent start or crank.",
+      "* WEATHER RADAR  OFF": "WXR/PWS sw...........................OFF\nCAPT DISPLAY mode selector..............OFF\nF/O DISPLAY mode selector...............OFF\nGAIN knob...........................AUTO\nTURB sw.............................AUTO",
+      "* WINDSHEAR/PWS sw  OFF": "RADAR sw............................OFF\nWINDSHEAR / PWS sw..................OFF\nGAIN knob ........................... AUTO/CAL\nMODE selector ........................AS RQRD",
+      "L/G lever  DOWN": "This position selects landing gear extension. An interlock mechanism prevents anyone from accidentally retracting the gear while the aircraft is on the ground. It does so by locking the lever in DOWN position when the shock absorber on either main gear is compressed (aircraft on ground) or the nose wheel steering is not centered. The landing gear hydraulic system remains pressurized as long as the landing gear is extended (if green hydraulic pressure is available).",
+      "Both WIPER Selectors  OFF": "Both WIPER selectors must be set to OFF to ensure that the windshield wipers are fully stopped and parked out of the crew’s field of vision. This avoids unnecessary electrical load and wear when wipers are not required.",
+      "BAT   CHECK AUTO": "If the aircraft has not been electrically supplied for 6 h or more, perform the following check:\n\n BAT 1 pb-sw and BAT 2 pb-sw...............CHECK OFF\n BAT 1 and 2 VOLTAGE......................CHECK ABOVE 25.5 V\n\n Battery voltage above 25.5 V ensures a charge above 50 %.\nIf the battery voltage is at or below 25.5 V:\nA charging cycle of about 20 min is required.\n\n BAT 1 pb-sw and BAT 2 pb-sw................AUTO\n EXT PWR pb-sw............................ON\n\n Check on ELEC SD page, that the battery contactor is closed and the batteries are charging\n\n After 20 min:\n\n BAT 1 pb-sw and BAT 2 pb-sw..................OFF\n BAT 1 and 2 VOLTAGE.........................CHECK ABOVE 25.5 V\n BAT 1 pb-sw and BAT 2 pb-sw..................AUTO\n\n If the battery voltage is above 25.5 V:\n\n BAT 1 pb-sw and BAT 2 pb-sw...................AUTO\n\n If the APU is started on batteries only, it should be started within 30 min after the selection of batteries to AUTO (35 min after battery selection to AUTO, the battery charge is less than 25 % of maximum capacity).\n\n If the aircraft has been electrically supplied during the last 6 h:\n\n BAT 1 pb-sw and BAT 2 pb-sw....................AUTO\n\nIf the AVAIL light is on:\nEXT PWR pb-sw................................ON",
+      "RMP CHECK ON/SET": "RMP 1 and 2..........................CHECK ON\nGreen NAV light.......................CHECK OFF\nSEL light.............................CHECK OFF\nCOM FREQUENCIES...................TUNE\n\nUse VHF 1 for ATC (only VHF 1 is available in emergency electrical configuration), VHF 2 for ATIS and company frequencies. VHF 3 is normally devoted to ACARS",
+      "ACP CHECK ON/SET": "INT knob.................PRESS OUT/VOLUME CHECK\n\nEnsure sure that INT volume is turned up, to enable contact with the ground crew.\n\nVHF ....................CHECK\n\nCheck transmission and reception.\nPilots should use their onside RMP to tune VHF or HF radios. After tuning a radio, pilots shall turn off the SEL light by selecting the radio system dedicated to each RMP.\n\nVHF 2 SET............... 121.5\nPF should set 131.5 on VHF 2 only at Istanbul Airport until push-back then should set 121.5\nHF (if required for flight...............CHECK\nCheck transmission and reception.\nCAUTION ‐ Do not transmit on HF during refueling operations (i.e. refueling, defueling, fuel transfer)\n‐ Only perform HF radio checks when appropriate (i.e. no personnel in the immediate vicinity).",
+      "APU FIRE TEST  PERFORM": "WARNING The automatic shutdown of the APU and the discharge of the APU fire extinguisher bottle may occur if the flight crew presses the APU FIRE test pb for more than 3 seconds.\n\nAPU FIRE pb-sw.......................CHECK IN and GUARDED\nAPU AGENT light......................CHECK OFF\nAPU FIRE TEST pb.....................PRESS and MAINTAIN",
+      "APU (if required)  START": "If the EXT PWR pb light is ON:\n\nAPU MASTER SW pb-sw..................ON\nAPU START pb-sw.......................ON",
+      "AIR COND Panel (When the APU is AVAIL)  SET": "When the APU is AVAIL:\n\nAPU BLEED pb-sw..................ON\n\nDo not use APU BLEED, if the ground personnel confirms that a LP or HP ground air unit is connected to the aircraft.\nTo determine if an HP ground air unit is connected, the flight crew should also check on the BLEED SD page, if there is pressure in the bleed air system.\nFor more information on the use of APU BLEED, Refer to FCTM/PR-NP-SOP-40 Use of APU Bleed.",
+      "EXT PWR pb  ON": "External power can be connected through the EXT PWR pushbutton. When available and within limits, pressing the pb connects the ground power to the aircraft network. External power has priority over the APU generator, but engine-driven generators override it. The ON light remains on even if external power is not actually powering the buses.",
+      "* EXT PWR pb  AS RQRD": "External power can be connected through the EXT PWR pushbutton. When available and within limits, pressing the pb connects the ground power to the aircraft network. External power has priority over the APU generator, but engine-driven generators override it. The ON light remains on even if external power is not actually powering the buses.",
+      "* All IR MODE Selectors  NAV": "All IR MODE selectors must be set to NAV. In NAV mode, each IR provides full inertial data (attitude, heading, position, speed) to the aircraft systems. If set out of NAV during flight, NAV mode cannot be recovered until a complete ground alignment is performed.",
+      "* COCKPIT LIGHTS   AS RQRD": "Adjust the cockpit integral, flood, glareshield, and FCU lights as required for visibility and crew comfort. Dome and other cockpit lights may also be set depending on ambient conditions.",
+      "* DATABASE VALID  CHECK": "Verify that the active FMGS database is valid and corresponds to the current AIRAC cycle. Review any stored waypoints, navaids, runways, or routes, and delete if required. If the “CHECK DATA BASE CYCLE” message appears, the active database is invalid, and the new AIRAC cycle must be selected before flight.",
+      "* ACARS FLT INIT  REQUEST": "Before engine start, pressing the INIT REQUEST prompt on the MCDU sends an ACARS request to load the flight plan, which if successful is auto-inserted into the active flight plan, but after engine start any uplinked flight plan goes to the secondary instead",
+      "ALL EFB  START": "All Electronic Flight Bags must be powered up and initialized, ensuring that their software, databases, and flight plan data are updated and synchronized with the FMGS",
+      "EFB Version and Database  CHECK": "The flight crew must verify that each EFB is running the correct software version and that the operational databases are valid and up to date before flight",
+      "* ENGINE & AIRCRAFT TYPE (For operations with the ACARS)  CHECK": "As part of FMGS pre-initialization when using ACARS, the crew must check that the correct engine type and aircraft type are properly identified before proceeding with flight plan initialization",
+      "* FLT NBR & FROM/TO (For operations with the ACARS)  INSERT/CHECK": "During ACARS initialization, the flight crew must ensure that the uplinked flight number and the FROM/TO airports are correctly inserted in the F-PLN; if the uplinked FLT NBR differs from the requested one, a “CHECK FLT NUMBER” message is displayed, and if the FLT NBR is invalid the message “INVALID FLT NBR UPLINK” appears .",
+      "* EFB FLIGHT INITIALIZE  CHECK/ACTIVATE FLT PLN": "During EFB initialization, the crew must check that the aircraft type, aircraft registration, flight number, and FROM/TO entries are correctly set and consistent with the FMS INIT A page, and then activate the company flight plan on the EFB",
+      "* RCL pb  PRESS 3 SEC": "When pressed normally, the E/WD displays all alerts previously cleared with the CLR pb that are still active; but when pressed for more than 3 seconds, the E/WD also displays all alerts previously cancelled via the EMER CANC pb, and if no alerts are present, the “NORMAL” message appears for 3 seconds",
+      "* LOGBOOK AND MEL/CDL ITEMS  CHECK": "The crew must check the deferred items list, crosscheck it with the ECAM recall, and review MEL/CDL items including their associated procedures and operational impact, to confirm dispatch acceptability and performance considerations",
+      "AIRCRAFT CONFIG SUMMARY  CHECK": "The flight crew must check the aircraft configuration summary on the E/WD and confirm that there are no active configuration warnings; typical warnings include trim not in takeoff range, flaps/slats not in configuration, speedbrake not retracted, doors not closed, brakes hot, or takeoff speeds not inserted .",
+      "* OEB  CHECK": "The crew must review the current Operational Engineering Bulletins (OEB) listed in the QRH and ensure that any applicable OEB procedures are identified and ready to be applied if their conditions occur during the flight",
+      "* AIRFIELD DATA  OBTAIN": "The crew must obtain all data needed for initializing the systems, preparing the cockpit, and computing preliminary takeoff performance; this includes runway in use, altimeter setting, and weather data",
+      "* NAV CHARTS  PREPARE": "The crew must prepare the required navigation charts for the expected departure, arrival, or approach procedures and verify that both pilots are referring to the same chart reference",
+      "* MEL/CDL ITEMS   CHECK ACTIVATED": "The crew must verify all deferred Minimum Equipment List (MEL) and Configuration Deviation List (CDL) items, ensure they are entered in the EFB/performance calculations, and confirm their operational impact (e.g., braking, thrust, drag, or system efficiency) before dispatch",
+      "* PRELIM T.O PERF DATA  COMPUTE": "The crew must compute preliminary takeoff performance data (using EFB, FMGS, or performance manuals), based on expected runway, weather, aircraft weight, MEL/CDL items, and airfield limitations, to ensure safe thrust setting, V-speeds, and configuration are available early in the preparation phase",
+      "* PRELIM T.O PERF DATA  CROSSCHECK": "Both pilots must independently review and crosscheck the preliminary takeoff performance data (runway, thrust setting, V-speeds, flap/trim configuration, and any MEL/CDL corrections) to ensure consistency and detect errors before activation in the FMGS or briefing",
+      "* ECAM OXY PRESS/HYD QTY/ENG OIL QTY   CHECK": "According to the A320 FCOM (25 FEB 2025), the checklist item “ECAM OXY PRESS / HYD QTY / ENG OIL QTY – CHECK” refers to verifying three essential systems on their respective ECAM system display pages:\n\n Oxygn (DOOR SD page): Check crew oxygen pressure; if the value is half-boxed in amber, confirm against the Minimum Flight Crew Oxygen Pressure chart to ensure it is sufficient for the flight.\n\n Hydraulics (HYD SD page): Check reservoir fluid levels are within the normal range (environmental factors may cause variation; high OAT can justify slightly above normal, otherwise contact maintenance).\n\n Engine Oil (ENG SD page): Check that each engine’s oil quantity is above the minimum; if the indication is missing, use FADEC Ground Power pushbuttons to display it",
+      "* BRAKE TEMP  CHECK": "According to the FCOM, the BRAKE TEMP CHECK is performed on the WHEEL SD page after landing. The crew must monitor brake temperatures and take maintenance action if:\n\nA brake temperature difference between two brakes on the same gear is more than 150 °C and one brake is ≥600 °C or ≤60 °C,\n\nThe average brake temperature difference between left and right gear exceeds 200 °C, or\n\nAny single brake temperature exceeds 800–900 °C depending on aircraft standard\n\nIf turnaround time is short or brake temperature is likely to exceed 500 °C, brake fans should be used without delay; otherwise, they should be delayed until 5 minutes after landing or while approaching the gate.",
+      "FLAPS   CHECK POSITION": "The crew must verify on the ECAM F/CTL page that the flap lever selection matches the actual flap position, ensuring proper extension/retraction and symmetry, since any disagreement indicates a system fault that may affect takeoff configuration monitoring.",
+      "* SPEED BRAKE lever   CHECK RET AND DISARMED": "The crew must ensure that the speed brake lever is fully retracted and disarmed on the ground, because an armed or extended position may trigger takeoff configuration warnings and can create unintended lift-dump or drag during takeoff roll.",
+      "* ACCU PRESS  CHECK": "The ACCU PRESS indication must be in the green band. If required use the electric pump on yellow hydraulic system to recharge the brake accumulator.",
+      "* PARK BRK handle  ON.": "When one brake temperature is above 500 °C (or 350 °C with brake fans ON), avoid applying the parking brake, unless operationally necessary.",
+      "* BRAKES PRESS indicator  CHECK": "The crew must check on the ECAM WHEEL page (or the BRAKES PRESS indicator) that brake pressure is available when the parking brake is set, confirming accumulator charge and system integrity for parking and emergency braking.",
+      "EMER EQPT  CHECK": "Check that:\n\n‐ Life vests are stowed\n‐ Crash axe is stowed\n‐ Protective Breathing Equipment (PBE) is stowed and ready for use\n‐ Portable fire extinguisher is lockwired and the press gauge indicator is in the green area\n‐ Smoke goggles are stowed (smoke hoods)\n‐ Oxygen masks are stowed\n‐ Flashlights are stowed\n‐ Escape ropes are stowed.",
+      "RAIN REPELLENT  CHECK": "CAUTION Never use rain repellent to wash the windshield and never use it on a dry windshield.",
+      "C/B PANELS  CHECK": "Check that all circuit breakers are set. Reset as necessary.",
+      "* GEAR PINS  CHECK ONBOARD/STOWED": "Check that the three gear pins are on board and stowed.",
+      "* EXTERIOR WALKAROUND  PERFORM": "The exterior walkaround ensures that the general condition of the aircraft is satisfactory and that the visible aircraft components and equipment are safe for the flight:\n\n‐ There is no impact damage to the structure\n‐ There is no evident fuel, oil, or hydraulic leak\n‐ All ground access doors are closed\n‐ All covers are removed (e.g. pitot covers, AOA covers, etc.).\n\nThe flight crew must perform a complete walkaround before each flight.\nThe parking brake must be set to ON during the exterior walkaround, in order to enable the flight crew to check brake wear indicators.\n\nWARNING If any landing gear door is open, do not apply hydraulic power until clearance is obtained from ground personnel.",
+      "PARK BRK handle  ON": "Keep the parking brake on to reduce hydraulic leak rate in the brake accumulator.",
+      "EXTERIOR LIGHTS  AS RQRD": "According to the A320 FCOM, when securing the aircraft, the EXTERIOR LIGHTS must be set AS REQUIRED. This means the crew should adjust exterior lights depending on ramp safety needs, visibility, and company procedures when the aircraft is left unattended after all passengers have disembarked.",
+      "All IR MODE selectors  OFF": "After the shutdown off the ADIRS, wait at least 10 s before turning off the electrical supply, in order to ensure that the ADIRS memorize the latest data.",
+      "APU BLEED pb-sw  OFF": "When securing the aircraft, the procedure requires setting APU BLEED pb-sw to OFF to ensure the APU is not supplying bleed air, preventing unnecessary duct pressurization and eliminating potential leak or overheat risks while the aircraft is powered down.",
+      "EXT PWR pb   AS RQRD": "If ground power is available and required (e.g., for maintenance or cleaning crews), the EXT PWR pb may be left ON.If no further electrical supply is needed, it should remain OFF to fully secure and shut down the aircraft.This flexibility ensures that the aircraft is properly secured without unnecessarily consuming electrical power or leaving systems energized.",
+      "APU MASTER SW pb-sw  OFF": "Turn off the APU after all passengers disembarked.",
+      "OXYGEN CREW SUPPLY pb-sw  OFF": "When securing the aircraft, confirm that the crew oxygen supply pushbutton is OFF to safely deactivate the oxygen system while the plane is unattended.",
+      "EMER EXIT LT sw  OFF": "When securing the aircraft, the EMER EXIT LT switch must be set to OFF, leaving all emergency lights off but still allowing crew override if needed.",
+      "NO PORTABLE ELEC DEVICE sw  OFF": "NO PORTABLE/ELEC DEVICE switch must be set to OFF when securing the aircraft on the ground.",
+      "SIGNS sw  OFF": "SIGNS switch must be set to OFF when securing the aircraft on the ground.",
+      "EFB applications  CLOSE": "Closing the EFB applications ensures no background processes remain active, prevents unnecessary power consumption, and helps protect system data integrity before the aircraft is left unattended.",
+      "All EFB  SWITCH/OFF": "This step ensures that all Electronic Flight Bags are completely shut down, preventing unnecessary power consumption and guaranteeing proper system reset for the next operation.",
+      "MAINT BUS sw   AS RQRD": "Should electrical power be required for the crew or servicing personnel, consider setting the overhead MAINT BUS sw (in the forward cabin) to the ON position, prior to setting aircraft power to off.",
+      "BAT 1 pb-sw + BAT 2 pb-sw  OFF": "Wait until the APU flap is fully closed (about 2 min after the APU AVAIL light goes out) before switching off the batteries. Switching the batteries off before the APU flap is closed may cause smoke in the cabin during the next flight. If the batteries are off while the APU is running, APU fire extinguishing is not available.",
+      "WINDOWS  CHECK/CLOSED": "To ensure that the sliding window is correctly closed and locked, push the handle of the sliding window fully forward to the closed position, and verify that the red indicator is visible.",
+      "SECURING THE AIRCRAFT C/L  COMPLETE": "This means that once all the securing procedures are done, both pilots must confirm the checklist is fully completed by making the call “Complete”. It is the formal closure of the Securing the Aircraft Checklist, ensuring no securing steps are missed.",
+    };
+
+    const FCOM_NOTES = Object.fromEntries(
+      Object.entries(FCOM_NOTES_RAW).map(([k, v]) => [normalizeKey(k), v])
+    );
+
+    function buildLeaders() {
+      document.querySelectorAll('.item p').forEach(p => {
+        const rawOriginal = p.textContent;
+        const raw = rawOriginal.replace(/\s+/g, ' ').trim();
+        let left = "", right = "";
+
+        const manual = rawOriginal.match(/^(.*?)\s{2,}(.*)$/);
+        if (manual) {
+          left  = manual[1].trim();
+          right = manual[2].trim();
+        } else {
+          const m = raw.match(/^(.*?)[.\s]{4,}(.*)$/);
+          if (m) {
+            left  = m[1].trim();
+            right = m[2].trim();
+          } else {
+            const parts = raw.split(' ');
+            right = parts.pop();
+            left  = parts.join(' ');
+          }
+        }
+
+        const itemEl = p.closest('.item');
+        itemEl.dataset.key = normalizeKey(rawOriginal);
+
+        p.innerHTML = `
+          <span class="l">${left}</span>
+          <span class="dotfill" aria-hidden="true"></span>
+          <span class="r">${right}</span>
+        `;
+
+        const info = document.createElement('span');
+        info.className = 'info-btn';
+        info.setAttribute('role','button');
+        info.setAttribute('tabindex','0');
+        info.setAttribute('aria-label','Açıklamayı göster');
+        info.textContent = '?';
+        info.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          openDesc(itemEl.dataset.key);
+        });
+        info.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            ev.stopPropagation();
+            openDesc(itemEl.dataset.key);
+          }
+        });
+        itemEl.appendChild(info);
+      });
+    }
+
+    function checkCompletion(topicEl){
+      const items = topicEl.querySelectorAll('.item');
+      const hidden = topicEl.querySelectorAll('.item.hidden');
+      topicEl.classList.toggle('completed', items.length === hidden.length);
+    }
+
+    const modal = document.getElementById('descModal');
+    const modalTitle = document.getElementById('descTitle');
+    const modalBody  = document.getElementById('descBody');
+    const copyBtn    = document.getElementById('copyBtn');
+    const closeBtn   = document.querySelector('.close-btn');
+
+    
+// Close modal helpers
+function attachModalClosers(){
+  // Close on X
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDesc();
+    });
+  }
+  // Close on backdrop click
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeDesc();
+    });
+  }
+  // Close on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeDesc();
+    }
+  });
+}
+function openDesc(key){
+      const safeKey = normalizeKey(key);
+      const text = FCOM_NOTES[safeKey];
+      modalTitle.textContent = key;
+      modalBody.textContent  = text ? text : "Bu madde için henüz bir açıklama girilmemiş. FCOM notunu FCOM_NOTES nesnesine ekleyebilirsin.";
+      modal.classList.add('show');
+
+      currentItemEl = document.querySelector(`.item[data-key="${safeKey}"]`);
+
+      setTimeout(() => closeBtn.focus(), 10);
+    }
+
+    function closeDesc(){ modal.classList.remove('show'); }
+
+    copyBtn.addEventListener('click', () => {
+      if (currentItemEl) {
+        currentItemEl.classList.add('hidden');
+        checkCompletion(currentItemEl.closest('.topic-box'));
+      }
+      closeDesc();
+    });
+
+    // Madde/Reset tıklamaları
+    document.addEventListener('click', (e) => {
+      const itemBtn = e.target.closest('.item');
+      const resetBtn = e.target.closest('[data-reset]');
+      if (itemBtn && !e.target.classList.contains('info-btn')) {
+        itemBtn.classList.add('hidden');
+        checkCompletion(itemBtn.closest('.topic-box'));
+      } else if (resetBtn) {
+        const topic = resetBtn.closest('.topic-box');
+        topic.querySelectorAll('.item').forEach(b => b.classList.remove('hidden'));
+        topic.classList.remove('completed');
+      }
+    });
+
+    buildLeaders();
+  attachModalClosers();
+  
+    document.getElementById('globalReset').addEventListener('click', () => {
+      document.querySelectorAll('.item').forEach(item => item.classList.remove('hidden'));
+      document.querySelectorAll('.topic-box').forEach(topic => topic.classList.remove('completed'));
+    });
+
+    const openDocInfo = document.getElementById('openDocInfo');
+    const docInfoModal = document.getElementById('docInfoModal');
+    const closeDocInfo = document.getElementById('closeDocInfo');
+
+    openDocInfo?.addEventListener('click', () => docInfoModal.classList.add('show'));
+    closeDocInfo?.addEventListener('click', () => docInfoModal.classList.remove('show'));
+    docInfoModal?.addEventListener('click', e => { if (e.target === docInfoModal) docInfoModal.classList.remove('show'); });
+  </script>
+
+<!-- GPT-INTEGRATION-BLOCK -->
+<style>
+/* Seçili madde vurgusu */
+.item.selected{}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const items = Array.from(document.querySelectorAll('.item'));
+  if (!items.length) return;
+
+  // Tüm maddeleri odaklanabilir yap
+  items.forEach(el => { if (el.tabIndex < 0) el.tabIndex = 0; });
+
+  function clearSelected(){ items.forEach(i => i.classList.remove('selected')); }
+  
+function selectIndex(i){
+  if (i < 0 || i >= items.length) return;
+  clearSelected();
+  items[i].classList.add('selected');
+  try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+  if (typeof __centerSelected === 'function') __centerSelected(items[i]);
+}
+); } catch(e){ items[i].focus(); }
+  }
+  function selectFirst(){ selectIndex(0); }
+
+  // Başlangıçta ilk madde seçili
+  if (!items.some(i => i.classList.contains('selected'))) selectFirst();
+
+  // Space = seçili maddeyi tıkla + bir sonrakini seç
+  document.addEventListener('keydown', function(e){
+    if (e.code === 'Space' && !e.repeat){
+      const ae = document.activeElement;
+      const tag = (ae && ae.tagName) || '';
+      const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+      if (!isEditable){
+        e.preventDefault(); // sayfa aşağı kaymasın
+        let idx = items.findIndex(i => i.classList.contains('selected'));
+        if (idx < 0){ selectFirst(); return; }
+        // Gerçek click olayını tetikle (normal dosyadaki davranışa uyumlu)
+        items[idx].click();
+        // Sonraki maddeyi seç
+        if (idx + 1 < items.length) selectIndex(idx + 1);
+      }
+    }
+  });
+
+  // Fare ile tıklayınca: o madde seçilsin, sonra odak sonraki maddeye geçsin
+  items.forEach((item, idx) => {
+    item.addEventListener('click', function(){
+      selectIndex(idx);
+      if (idx + 1 < items.length){
+        try { items[idx + 1].focus({ preventScroll: true }); } catch(e){ items[idx + 1].focus(); }
+      }
+    });
+  });
+
+  // Global reset (üst başlık) ve bölüm resetlerinden sonra her zaman en üstteki madde seçili olsun
+  function afterResetSelectFirst(){
+    // Dahili reset handlerlarının bitmesini bekle
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const firstItem = document.querySelector('.item');
+        if (firstItem){
+          clearSelected();
+          if (firstItem.tabIndex < 0) firstItem.tabIndex = 0;
+          firstItem.classList.add('selected');
+          try { firstItem.focus({ preventScroll: true }); } catch(e){ firstItem.focus(); }
+        }
+      });
+    });
+  }
+
+  const globalReset = document.getElementById('globalReset');
+  if (globalReset) globalReset.addEventListener('click', afterResetSelectFirst);
+  document.querySelectorAll('[data-reset]').forEach(btn => btn.addEventListener('click', afterResetSelectFirst));
+});
+</script>
+
+<script>
+// Seçili maddeyi ekranda ortala ve kısa süreli vurgula
+function __centerSelected(el){
+  if (!el) return;
+  try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_) { el.scrollIntoView(true); }
+  try {
+    el.classList.add('autoscroll-highlight');
+    setTimeout(()=> el.classList.remove('autoscroll-highlight'), 500);
+  } catch(_){}
+}
+</script>
+
+
+
+
+
+
+<script>
+// Space tuşu: input alanlarında değilsek sayfa kaymasını tamamen engelle
+// ve seçili/odaklı maddeyi tıkla + bir sonrakine geç + ortala
+document.addEventListener('keydown', function(e){
+  if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName) || '';
+    const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+    if (isEditable) return;
+
+    // Her durumda sayfa kaymasını durdur
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Öncelik: odaktaki .item, yoksa .item.selected, o da yoksa ilk .item
+    let curr = (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item.selected') || document.querySelector('.item');
+    if (!curr) return;
+
+    // Mevcut maddeyi "tıkla"
+    if (typeof curr.click === 'function') curr.click();
+
+    // Aynı topic içinde bir sonrakine odaklan
+    const topic = curr.closest('.topic-box') || document;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    const idx = items.indexOf(curr);
+    const next = (idx >= 0 && idx + 1 < items.length) ? items[idx + 1] : curr;
+
+    // Odak ve ortalama (sayfa kaydırmasını biz kontrol ediyoruz)
+    try { next.focus({ preventScroll: true }); } catch(_){ next.focus(); }
+    setTimeout(function(){
+      const sel = document.querySelector('.item.selected') || next;
+      if (typeof __centerSelected === 'function') __centerSelected(sel);
+    }, 30);
+  }
+});
+</script>
+
+
+<script>
+// === Smart Space Handler (capture-phase) ===
+// Kaynak davranış: smart.html (Space -> tıkla, sonraki maddeye odaklan, ortala)
+// Not: input/textarea/select içinde değilsek varsayılan kaydırmayı iptal eder.
+(function(){
+  function isEditable(ae){
+    if(!ae) return false;
+    const tag = (ae.tagName||'').toUpperCase();
+    return ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT';
+  }
+  
+  function focusNextWithinTopic(curr){
+    // Aday filtresi: gizli/done olmayan
+    function isCandidate(el){
+      return el && !el.classList.contains('hidden') && !el.classList.contains('done');
+    }
+    // Önce mevcut topic içinde sonraki uygunu ara
+    const topic = curr && curr.closest ? curr.closest('.topic-box') : null;
+    if (topic){
+      const items = Array.from(topic.querySelectorAll('.item'));
+      const idx = items.indexOf(curr);
+      for (let i = idx + 1; i < items.length; i++){
+        if (isCandidate(items[i])){
+          try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+          // seçimi görsel olarak taşı
+          document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+          items[i].classList.add('selected');
+          if (typeof __centerSelected === 'function'){
+            setTimeout(()=>__centerSelected(items[i]), 30);
+          }
+          return;
+        }
+      }
+    }
+    // Mevcut topic bitti: sıradaki topic-box içinde ilk uyguna geç
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const tIdx = topic ? topics.indexOf(topic) : -1;
+    for (let t = tIdx + 1; t < topics.length; t++){
+      const cand = Array.from(topics[t].querySelectorAll('.item')).find(isCandidate);
+      if (cand){
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        if (typeof __centerSelected === 'function'){
+          setTimeout(()=>__centerSelected(cand), 30);
+        }
+        return;
+      }
+    }
+    // Hiç aday kalmadıysa: mevcut/ilk elemana geri dön
+    const fallback = document.querySelector('.item') || curr;
+    if (fallback){
+      try { fallback.focus({preventScroll:true}); } catch(_){ fallback.focus(); }
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      fallback.classList.add('selected');
+      if (typeof __centerSelected === 'function'){
+        setTimeout(()=>__centerSelected(fallback), 30);
+      }
+    }
+  }
+); } catch(_) { next && next.focus && next.focus(); }
+    if (typeof __centerSelected === 'function'){
+      setTimeout(function(){
+        const sel = document.querySelector('.item.selected') || next;
+        __centerSelected(sel);
+      }, 30);
+    }
+  }
+  // Tüm .item elemanlarını odaklanabilir yap
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.item').forEach(function(el){
+      if (el.tabIndex < 0) el.tabIndex = 0;
+    });
+    // İlk maddeyi göster & ortala (smart davranışı)
+    var first = document.querySelector('.item');
+    if (first){
+      try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(first);
+    }
+  });
+
+  // Capture-phase: diğer dinleyicilerden önce çalışsın
+  document.addEventListener('keydown', function(e){
+    if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+      var ae = document.activeElement;
+      if (isEditable(ae)) return;
+
+      // Varsayılan sayfa kaydırmayı tamamen durdur
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+      // Öncelik: odaktaki .item -> seçili .item -> ilk .item
+      var curr = (ae && ae.closest && ae.closest('.item')) ||
+                 document.querySelector('.item.selected') ||
+                 document.querySelector('.item');
+      if (!curr) return;
+
+      // "Tıkla" (toggle/select mantığını mevcut koda bırak)
+      if (typeof curr.click === 'function') curr.click();
+
+      // Aynı topic içinde bir sonrakine odaklan ve ortala
+      focusNextWithinTopic(curr);
+      /* HOOK: call completion check after space */
+      try { __checkTopicCompletionAndAdvance(curr.closest('.topic-box')); } catch(_) {}
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+// === Bölüm Tamamlandığında Sonrakine Geç ===
+(function(){
+  function allDone(topic){
+    const items = Array.from(topic.querySelectorAll('.item'));
+    return items.length>0 && items.every(el => el.classList.contains('done'));
+  }
+  function focusFirstOfNext(topic){
+    let next = topic.nextElementSibling;
+    while(next){
+      if (next.classList && next.classList.contains('topic-box')){
+        const first = next.querySelector('.item');
+        if (first){
+          try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+          if (typeof __centerSelected === 'function') __centerSelected(first);
+          break;
+        }
+      }
+      next = next.nextElementSibling;
+    }
+  }
+  document.addEventListener('click', function(e){
+    const item = e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    // Küçük gecikmeyle kontrol et (class 'done' eklendikten sonra)
+    setTimeout(function(){
+      if (allDone(topic)) focusFirstOfNext(topic);
+    }, 40);
+  });
+})();
+</script>
+
+
+<script>
+// Bölüm tamamlanınca otomatik olarak sonraki bölümün ilk maddesini seç
+
+
+function __checkTopicCompletionAndAdvance(topic){
+  if (!topic) return;
+  const items = Array.from(topic.querySelectorAll('.item'));
+  const hidden = items.filter(i => i.classList.contains('hidden'));
+  const allHidden = (items.length > 0 && hidden.length === items.length) || topic.classList.contains('completed');
+  if (allHidden){
+    // Find the next .topic-box
+    let nextTopic = topic.nextElementSibling;
+    while (nextTopic && !(nextTopic.classList && nextTopic.classList.contains('topic-box'))) {
+      nextTopic = nextTopic.nextElementSibling;
+    }
+    if (nextTopic){
+      // First item of the next topic, regardless of hidden/done
+      const cand = nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+if (nextTopic){
+      // First available (not hidden) item
+      const cand = Array.from(nextTopic.querySelectorAll('.item')).find(el => !el.classList.contains('hidden') && !el.classList.contains('done')) || nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+ kontrol et
+document.addEventListener('click', function(e){
+  const item = e.target.closest && e.target.closest('.item');
+  if (item){
+    const topic = item.closest('.topic-box');
+    setTimeout(()=>__checkTopicCompletionAndAdvance(topic), 50);
+  }
+});
+</script>
+
+
+<script>
+// Ensure first item selected on load
+document.addEventListener('DOMContentLoaded', function(){
+  var first = document.querySelector('.item');
+  if (first){
+    document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected==='function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- İlk açılışta: en üstteki *görünür* maddeyi seçili getir ---
+document.addEventListener('DOMContentLoaded', function(){
+  // Tüm .item'leri odaklanabilir yap
+  document.querySelectorAll('.item').forEach(function(el){
+    if (el.tabIndex < 0) el.tabIndex = 0;
+  });
+  // Seçimleri temizle
+  document.querySelectorAll('.item.selected').forEach(function(el){
+    el.classList.remove('selected');
+  });
+  // İlk görünür madde (.hidden olmayan) -> yoksa ilk .item
+  var first = document.querySelector('.topic-box .item:not(.hidden)') || document.querySelector('.item');
+  if (first){
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected === 'function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- Bölüm tamamlanınca bir sonrakine otomatik geçiş (sağlam gözlemci) ---
+(function(){
+  function isTopicCompleted(topic){
+    if (!topic) return false;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    if (!items.length) return false;
+    const hiddenCount = items.filter(i => i.classList.contains('hidden')).length;
+    return hiddenCount === items.length || topic.classList.contains('completed');
+  }
+  function firstCandidateIn(topic){
+    if (!topic) return null;
+    return Array.from(topic.querySelectorAll('.item')).find(i => !i.classList.contains('hidden') && !i.classList.contains('done')) || topic.querySelector('.item');
+  }
+  function advanceToNextTopic(fromTopic){
+    if (!fromTopic) return;
+    let next = fromTopic.nextElementSibling;
+    while (next && !(next.classList && next.classList.contains('topic-box'))) next = next.nextElementSibling;
+    const cand = firstCandidateIn(next);
+    if (cand){
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      cand.classList.add('selected');
+      try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(cand);
+    }
+  }
+  // Click sonrası küçük gecikmeyle kontrol
+  document.addEventListener('click', function(e){
+    const item = e.target.closest && e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    setTimeout(function(){
+      if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+    }, 40);
+  }, true);
+  // Her topic için gözlemci: .item class değişimlerini ve topic.class değişimini izle
+  function attachObserver(topic){
+    try{
+      const obs = new MutationObserver(function(){
+        if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+      });
+      obs.observe(topic, {attributes:true, attributeFilter:['class'], subtree:true});
+    }catch(_){}
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.topic-box').forEach(attachObserver);
+  });
+})();
+</script>
+
+
+<script>
+// === Helper: find first UNDONE item before given topic ===
+function __findFirstUndoneBeforeTopic(currTopic){
+  try{
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const idx = topics.indexOf(currTopic);
+    if (idx <= 0) return null;
+    for (let t = 0; t < idx; t++){
+      const items = Array.from(topics[t].querySelectorAll('.item'));
+      for (const it of items){
+        if (!it.classList.contains('hidden') && !it.classList.contains('done')){
+          return { topic: topics[t], item: it };
+        }
+      }
+    }
+  }catch(_){}
+  return null;
+}
+</script>
+
+<script>
+// === Cross-topic click guard (capture-phase) ===
+(function(){
+  document.addEventListener('click', function(ev){
+    const item = ev.target && ev.target.closest ? ev.target.closest('.item') : null;
+    if (!item) return;
+    const topic = item.closest && item.closest('.topic-box');
+    if (!topic) return;
+
+    const miss = __findFirstUndoneBeforeTopic(topic);
+    if (miss){
+      ev.preventDefault(); ev.stopPropagation();
+      try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+      try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item.focus && miss.item.focus(); }
+      try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+      if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+    }
+  }, true);
+})();
+</script>
+
+<script>
+// === Space key guard (capture-phase) ===
+// Blocks forward movement when earlier topics contain undone items, before any other handlers run.
+(function(){
+  document.addEventListener('keydown', function(e){
+    if (e.repeat) return;
+    // normalize space detection and ignore when typing in inputs/textareas/selects
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName || '').toUpperCase();
+    const editable = ae && (ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT');
+    if (editable) return;
+
+    if (e.key === ' ' || e.code === 'Space'){
+      // determine current topic from selected or focused item
+      const curr = document.querySelector('.item.selected') || (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item');
+      const currTopic = curr && curr.closest ? curr.closest('.topic-box') : null;
+      const miss = __findFirstUndoneBeforeTopic(currTopic);
+      if (miss){
+        e.preventDefault(); e.stopPropagation();
+        try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+        try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item && miss.item.focus && miss.item.focus(); }
+        try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+        try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+        if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+      }
+    }
+  }, true);
+})();
+</script>
+
+</body>
+</html>
