@@ -1,0 +1,86 @@
+﻿body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+#container {
+	padding: 0;
+}
+#masthead {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	clear: both;
+	float: left;
+}
+#navigation {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	clear: both;
+}
+#indentmenu {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	clear: both;
+	float: left;
+}
+#indentmenu2 {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	clear: both;
+	float: left;
+}
+#column_l {
+	position: relative;
+	float: left;
+}
+#column_c {
+	position: relative;
+	float: left;
+}
+#column_r {
+	float: right;
+}
+#column_12 {
+	position: relative;
+	float: left;
+}
+#column_c2 {
+	position: relative;
+	float: left;
+}
+#column_c3 {
+	position: relative;
+	float: left;
+}
+#column_2 {
+	position: relative;
+	float: left;
+}
+#column_3 {
+	position: relative;
+	float: left;
+}
+#footer {
+	margin: 1px;
+	padding: 0;
+	border: 0;
+}
+.float_right {
+	float:right;
+}
+#footer2 {
+	margin: 1px;
+	padding: 0;
+	border: 0;
+}
+.float_right {
+	float:right;
+}

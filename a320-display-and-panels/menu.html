@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Menu | A320 Displays and Panels</title>
+
+<meta name="keywords" content="Menu | A320 Displays and Panels" />
+<meta name="description" content="A320 Displays and Panels. A description of every cockpit A320 control panel, display, and switch is provided in this ebook." />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+<link href="styles/efb-menu.css" rel="stylesheet" type="text/css" media="all" />
+
+<!-- iOS ve PWA ayarları -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="A320 Panels">
+<link rel="apple-touch-icon" href="icons/ios-icon.png">
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+</head>
+<body>
+<div id="header" class="container">
+	<div id="logo">
+		<h1>A320 Displays and Panels</h1>
+	</div>
+	<div id="menu">
+		<ul>
+			<li class="active"><a title="A320 Dispalys and Panels Menu" href="menu.html">MENU</a></li>
+			<li><a title="Back" href="javascript:history.back();">BACK</a></li>
+			<li><a title="Forward" href="javascript:history.forward();">FWD</a></li>
+			<li><a title="Index" href="TOCindex/sys-17.0.0.html">INDEX</a></li>
+			<li><a title="Panels" href="help/panels.html">PANELS</a></li>
+		</ul>
+		<p>&nbsp;</p>
+	</div>
+</div>
+<div id="page" class="container">
+	<div id="page-bgtop">
+		<div id="page-bgbtm">
+			<div id="wide-content">
+				<div id="box3" class="box-style">
+					<h2 class="title2">Menu</h2>
+						<div id="box4" class="box-style">
+							<ul id="navmenu">
+								<li><a title="1.0 Airplane General Table of Contents" href="airplane-general/sys-1.0.0.html">1.0 AIRPLANE GENERAL</a></li>
+								<li><a title="2.0 Communications Table of Contents" href="communications/sys-2.0.0.html">2.0 COMMUNICATIONS</a></li>
+								<li><a title="3.0 Electrical and Lighting Table of Contents" href="electrical/sys-3.0.0.html">3.0 ELECTRICAL AND LIGHTING</a></li>
+								<li><a title="Emergency Equipment Table of Contents"  href="emergency-equipment/sys-4.0.0.html">4.0 EMERGENCY EQUIPMENT</a></li>
+								<li><a title="5.0 Engines Table of Contents" href="engines/sys-5.0.0.html">5.0 ENGINES AND APU</a></li>
+								<li><a title="6.0 Fire Protection Table of Contents" href="fire-protect/sys-6.0.0.html">6.0 FIRE PROTECTECTION</a></li>
+								<li><a title="7.0 Flight Controls Table of Contents" href="flight-controls/sys-7.0.0.html">7.0 FLIGHT CONTROLS</a></li>
+								<li><a title="8.0 Flight Instruments Table of Contents" href="flight-instruments/sys-8.0.0.html">8.0 FLIGHT INSTRUMENTS</a></li>
+						</ul>
+						</div>
+						<div id="box5" class="box-style">
+							<ul id="navmenu">
+								<li><a title="9.0 Fuel Table of Contents" href="fuel/sys-9.0.0.html">9.0 FUEL</a></li>
+								<li><a title="10.0 Hydraulics Table of Contents" href="hydraulics/sys-10.0.0.html">10.0 HYDRAULICS</a></li>
+								<li><a title="11.0 Ice and Rain Table of Contents" href="ice-rain/sys-11.0.0.html">11.0 ICE AND RAIN</a></li>
+								<li><a title="12.0 Landing Gear Table of Contents" href="landing-gear/sys-12.0.0.html">12.0 LANDING GEAR</a></li>
+								<li><a title="13.0 Navigation - Autoflight Table of Contents" href="nav-autoflight/sys-13.0.0.html">13.0 NAVIGATION - AUTOFLIGHT</a></li>
+								<li><a title="14.0 Navigation - FMS Table of Contents" href="nav-flight-management/sys-14.0.0.html">14.0 FLIGHT MANAGEMENT SYSTEM</a></li>
+								<li><a title="15.0 Pneumatics Table of Contents" href="pneumatics/sys-15.0.0.html">15.0 PNEUMATICS</a></li>
+								<li><a title="16.0 Warning Systems Table of Contents"  href="warning-systems/sys-16.0.0.html">16.0 WARNING SYSTEMS</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="footer" class="container">
+	<p>&copy; 2012 EFB Desktop. All rights reserved.</p>
+</div>
+<!-- Service worker kaydı -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
+</body>
+</html>
