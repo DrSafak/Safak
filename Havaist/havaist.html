@@ -90,7 +90,7 @@
 </head>
 <body>
 <div class="wrap">
-<h1>Havaist Saat Hesaplaması</h1>
+<h1>Havaist Saat Hesaplaması</h1><div class="footer muted">Takvim modu: <strong>CONFIG.mode = 'manual'</strong> (30 dk aralıklarla yaklaşık). Gerekirse <strong>'manual'</strong> yapıp tam saatleri yapıştırın.</div>
 <div class="card">
 <div class="row" style="white-space:nowrap">
 <div class="label">İmza saati:</div>
@@ -120,15 +120,67 @@
 <div class="footer muted">Geri sayım İstanbul saatine göre çalışır (Europe/Istanbul).</div>
 </div>
 <script>
-const MERTER_LOCAL=["00:45","03:20","04:45","05:50","06:50","07:20","08:15","09:10","10:10","10:40","11:40","12:45","13:55","14:30","15:30","16:30","18:00","19:00","20:05","21:15","22:20","23:25"];
-const BAKIRKOY_LOCAL=["00:30","03:00","04:30","05:30","06:30","07:10","08:00","09:00","10:00","10:30","11:30","12:30","13:30","14:10","15:10","16:10","17:40","18:40","19:40","20:40","21:40","22:40"];
+/* Schedules are now configurable */
+
+
+const CONFIG = {
+  mode: "manual",
+  generated: {
+    Merter: { first: "05:20", last: "04:40", headwayMin: 30 },
+    "Bakırköy": { first: "05:10", last: "04:40", headwayMin: 30 }
+  },
+  manual: {
+    Merter: ["00:45", "03:20", "04:45", "05:50", "06:50", "07:20", "08:15", "09:10", "10:10", "10:40", "11:40", "12:45", "13:55", "14:30", "15:30", "16:30", "17:30", "18:00", "19:00", "20:05", "21:15", "22:20", "23:25"],
+    "Bakırköy": ["00:05", "02:15", "04:05", "05:20", "06:20", "07:50", "08:40", "09:40", "11:10", "12:10", "13:20", "15:00", "16:00", "17:00", "18:30", "19:30", "20:40", "21:50", "22:50"]
+  }
+};
+
+
+function hmToMinutes(hm){const[h,m]=hm.split(':').map(Number);return h*60+m;}
+function minutesToHM(min){min=(min%1440+1440)%1440;const h=Math.floor(min/60),m=min%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');}
+function buildGeneratedTimes(first, last, headway){
+  const start = hmToMinutes(first);
+  const end = hmToMinutes(last);
+  const out = [];
+  let t = start;
+  out.push(minutesToHM(t));
+  // advance by headway until we hit 'end' (wrapping allowed)
+  while (true){
+    t = (t + headway) % 1440;
+    out.push(minutesToHM(t));
+    if (t === end) break;
+    // guard to avoid infinite loops if misconfigured
+    if (out.length > 200) break;
+  }
+  return out;
+}
+
 function hmToMinutes(hm){const[h,m]=hm.split(':').map(Number);return h*60+m;}function minutesToHM(min){min=(min%1440+1440)%1440;const h=Math.floor(min/60),m=min%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');}
 function shift(hm,mins){return minutesToHM(hmToMinutes(hm)+mins);}function offsetForStop(stop){return stop==='Bakırköy'?40:30;}
 function toIstanbulNow(){const fmt=new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});const parts=Object.fromEntries(fmt.formatToParts(new Date()).map(p=>[p.type,p.value]));return new Date(Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute,+parts.second));}
 function localDateForToday(hm){const now=toIstanbulNow();const[hh,mm]=hm.split(':').map(Number);return new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),hh,mm,0));}
 function nextLocalOccurrence(hm){const now=toIstanbulNow();const[hh,mm]=hm.split(':').map(Number);const cand=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),hh,mm,0));if(cand<=now)cand.setUTCDate(cand.getUTCDate()+1);return cand;}
 const gridMerged=document.getElementById('saatlerMerged');let lastSelBtn=null,lastSelStop=null,lastSelHM=null;
-const merged=[...MERTER_LOCAL.map(hm=>({hm,stop:'Merter',cls:'time'})),...BAKIRKOY_LOCAL.map(hm=>({hm,stop:'Bakırköy',cls:'time bk'})),].sort((a,b)=>hmToMinutes(a.hm)-hmToMinutes(b.hm));
+
+// Build schedule from CONFIG
+let MERTER_LOCAL = [];
+let BAKIRKOY_LOCAL = [];
+
+if (CONFIG.mode === 'generated'){
+  const m = CONFIG.generated.Merter;
+  const b = CONFIG.generated["Bakırköy"];
+  MERTER_LOCAL = buildGeneratedTimes(m.first, m.last, m.headwayMin);
+  BAKIRKOY_LOCAL = buildGeneratedTimes(b.first, b.last, b.headwayMin);
+} else {
+  MERTER_LOCAL = CONFIG.manual.Merter.slice();
+  BAKIRKOY_LOCAL = CONFIG.manual["Bakırköy"].slice();
+}
+
+const merged=[
+  ...MERTER_LOCAL.map(hm=>({hm,stop:'Merter',cls:'time'})),
+  ...BAKIRKOY_LOCAL.map(hm=>({hm,stop:'Bakırköy',cls:'time bk'})),
+].sort((a,b)=>hmToMinutes(a.hm)-hmToMinutes(b.hm));
+
 function makeButton(entry){const b=document.createElement('button');b.className=entry.cls;b.textContent=entry.hm;b.dataset.stop=entry.stop;b.addEventListener('click',()=>recalcFromDeparture(entry.hm,entry.stop,b));return b;}
 merged.forEach(e=>gridMerged.appendChild(makeButton(e)));
 function firstDepartureConsideringOffsets(leaveHM){const leaveMin=hmToMinutes(leaveHM);for(const e of merged){const need=leaveMin+offsetForStop(e.stop);if(hmToMinutes(e.hm)>=need)return e;}return merged[0];}
