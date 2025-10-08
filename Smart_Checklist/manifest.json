@@ -1,6 +1,6 @@
 {
-  "name": "B737 Smart Checklist",
-  "short_name": "B737 Smart Checklist",
+  "name": "B737 Checklist",
+  "short_name": "B737 Checklist",
   "start_url": "PMDG_737-800.html",
   "scope": ".",
   "display": "standalone",
