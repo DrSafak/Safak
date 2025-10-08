@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>A320 Normal Checklist</title>
+<!-- App Icons & Manifest -->
+<link href="icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<!-- Tek seferde font yükleme -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Oswald:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root{
+      --bg:#0f1117;
+      --panel:#1c1f26;
+      --item:#2a2f3a;
+      --item-hover:#3b4252;
+      --text:#e5e7eb;
+      --title:#ffb347;
+      --header:#048CFC; /* sabit renk */
+      --shadow:0 4px 7px rgba(0,0,0,.2);
+      --radius-lg:16px;
+      --radius-md:10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align:center;
+    }
+
+    h3{
+      font-family:Oswald, sans-serif;
+      font-weight:500;
+      font-size:28px;
+      margin: clamp(32px, 5vh, 80px) auto 24px;
+      width:min(700px, 92vw);
+      padding:12px 16px;
+      border-radius:20px;
+      background:var(--header);
+      box-shadow:var(--shadow);
+    }
+
+    .topic-box{
+      width:min(700px, 92vw);
+      margin:24px auto 40px;
+      padding:16px;
+      border-radius:var(--radius-lg);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+
+    .topic-box h2{
+      font-family:Oswald, sans-serif;
+      color:var(--title);
+      margin:8px 4px 14px;
+      font-weight:600;
+      letter-spacing:.3px;
+      font-size:22px;
+	  text-align: center;
+    }
+
+    .item{
+      display:block;
+      width:100%;
+      padding:10px 14px;
+      margin:8px 0;
+      border:none;
+      border-radius:var(--radius-md);
+      background:var(--item);
+      color:inherit;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+    .item:hover{ background:var(--item-hover); }
+
+    .item p{
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      line-height:1.35;
+    }
+
+    .l, .r { flex:0 0 auto; }
+    .dotfill{
+      flex:1 1 auto;
+      border-bottom:2px dotted rgba(255,255,255,.45);
+      height:0;
+      translate:0 -.3ch;
+    }
+
+    .reset{
+      display:block;
+      padding:9px 16px;
+      margin: 16px auto 0;
+	  text-align: center;
+	  font-weight: 600;
+	  font-size: 16px; 
+	  padding: 8px 12px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:#fff;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      margin: 12px auto 0; /* otomatik yatay margin = ortalanır */
+      
+    }
+    .reset:hover{ background:#1d4ed8; }
+
+    .hidden{ display:none !important; }
+    .completed{
+      outline:2px solid #22c55e55;
+      box-shadow:0 0 0 3px #22c55e22 inset, var(--shadow);
+    }
+	
+	#globalReset {
+  cursor: pointer; /* imleç el işareti olsun */
+    }
+    .header-line {
+    display: flex;
+    align-items: center;
+    }
+
+.header-line .l {
+  flex: 0 0 auto;
+}
+
+.dotfill {
+  flex: 1 1 auto;
+  border-bottom: 2px dotted rgba(255,255,255,.45);
+  margin-left: -8px;      /* solda boşluk yok */
+  margin-right: -8px;   /* sağdaki kelimeden önce az boşluk */
+  transform: translateY(-2px);
+  align-self: flex-end;
+}
+
+.header-line .r {
+  flex: 0 0 auto;
+}
+
+/* Alt liste */
+.sub-list {
+  margin: 6px 0 0 20px;  /* soldan boşluk */
+  padding: 0;
+  list-style-type: disc; /* klasik bullet noktaları */
+  text-align: left;      /* sola hizalı */
+}
+
+.sub-list li {
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+.topic-box.completed {
+  padding: 5px 12px;    /* normalde 16px idi, küçült */
+  min-height: unset;    /* sabit yükseklik varsa iptal et */
+}
+
+
+
+
+  
+.completed h2 {
+  color: #22c55e; /* başlık yeşil */
+  white-space: nowrap !important;    /* tek satır */
+  overflow: hidden !important;       /* taşma gizle */
+  text-overflow: clip !important;    /* üç noktasız kes */
+  font-size: clamp(12px, 3vw, 22px) !important; /* sığacak kadar küçülsün */
+}
+.completed h2::after {
+  content: "  CHECKLIST COMPLETED";
+  color: #22c55e;
+  font-weight: 700;
+  margin-left: 8px;
+  white-space: nowrap !important;    /* tek satır */
+}
+
+
+/* Auto-scroll highlight */
+.item.autoscroll-highlight{
+  outline: 2px solid rgba(96,165,250,.6);
+  box-shadow: 0 0 0 4px rgba(96,165,250,.24), var(--shadow, 0 4px 7px rgba(0,0,0,.2));
+  transition: outline .2s ease, box-shadow .2s ease;
+}
+
+</style>
+<style>
+/* removed old hard nav */
+#__hardMainNav{
+  width: min(700px, 92vw) !important;
+  margin: 10px auto 20px !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  z-index: 50 !important;
+}
+#__hardMainNav .__tab{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 140px !important;
+  padding: 10px 14px !important;
+  border-radius: var(--radius-lg) !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  background: #007bff !important;
+  color: #fff !important;
+  box-shadow: var(--shadow) !important;
+}
+#__hardMainNav .__tab.__active{ background:#005ec0 !important; }
+#__hardMainNav .__tab:hover{ filter: brightness(1.05) !important; }
+</style>
+<style>
+/* === Single, clean title bar === */
+#topTitleBar{
+  width: min(700px, 92vw);
+  margin: clamp(32px, 5vh, 80px) auto 24px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  background: #007bff;
+  color: #fff;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+#topTitleBar #globalReset{
+  display: inline;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+}
+#topTitleBar .title-edit-btn{
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  vertical-align: middle;
+}
+
+/* Neutralize any old wrap styles (if remains from cache fragments) */
+#globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+</style>
+<style>
+/* === Aviation-themed nav colors for __hardMainNav/__tab structure === */
+#__hardMainNav .__tab:nth-child(1) { background: #007bff !important; } /* VATSIM */
+#__hardMainNav .__tab:nth-child(2) { background: #fd7e14 !important; } /* PRELIM */
+#__hardMainNav .__tab:nth-child(3) { background: #28a745 !important; } /* NORMAL */
+
+#__hardMainNav .__tab:nth-child(1):hover { background: #0069d9 !important; }
+#__hardMainNav .__tab:nth-child(2):hover { background: #e8590c !important; }
+#__hardMainNav .__tab:nth-child(3):hover { background: #218838 !important; }
+
+#__hardMainNav .__tab.__active { filter: brightness(0.9) !important; }
+</style>
+<style>
+/* === Theme 3: Cockpit Deep (deep tones, high contrast) === */
+#__hardMainNav .__tab:nth-child(1){ background:#1f3b73 !important; } /* VATSIM: deep navy */
+#__hardMainNav .__tab:nth-child(2){ background:#b35400 !important; } /* PRELIM: burnt orange */
+#__hardMainNav .__tab:nth-child(3){ background:#157347 !important; } /* NORMAL: deep green */
+
+#__hardMainNav .__tab:nth-child(1):hover{ background:#1a315f !important; }
+#__hardMainNav .__tab:nth-child(2):hover{ background:#984800 !important; }
+#__hardMainNav .__tab:nth-child(3):hover{ background:#125f3a !important; }
+
+#__hardMainNav .__tab.__active{ filter:brightness(.92) !important; }
+</style>
+<style>
+#__hardMainNav {
+  width: min(700px, 92vw) !important;
+  margin: 10px auto 20px !important;
+  display: flex !important;
+  justify-content: space-between !important; /* sağa sola yasla */
+  flex-wrap: wrap !important;               /* taşma olursa alta geçsin */
+  gap: 8px !important;                      /* buton arası boşluk */
+  z-index: 50 !important;
+}
+#__hardMainNav .__tab {
+  flex: 1 1 auto !important;    /* esnek genişlik */
+  text-align: center !important;
+}
+</style>
+<style>
+@media (max-width: 640px) {
+  #__hardMainNav {
+    display: flex !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;   /* alt satıra geçmesin */
+    gap: 6px !important;
+  }
+  #__hardMainNav .__tab {
+    flex: 1 1 0 !important;         /* eşit boy küçülsün */
+    min-width: 0 !important;        /* daralmaya izin ver */
+    padding: 8px 4px !important;    /* daha dar padding */
+    font-size: clamp(9px, 2.2vw, 12px) !important; /* mobilde küçülür */
+    text-align: center !important;
+  }
+}
+</style>
+<style>
+/* === Mobile: keep tabs on a single row and auto-shrink equally (preserve colors/design) === */
+@media (max-width: 480px){
+  #__hardMainNav{
+    width: min(700px, 92vw) !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;          /* tek satırda kalsın */
+    justify-content: space-between !important;
+    gap: 4px !important;                   /* daha dar boşluk */
+  }
+  #__hardMainNav .__tab{
+    flex: 1 1 0 !important;                /* eşit ve orantılı küçülsün */
+    min-width: 0 !important;               /* 140px kısıtı geçersiz kalsın */
+    padding: 8px 6px !important;           /* daha küçük padding */
+    font-size: clamp(10px, 3.2vw, 12px) !important; /* yazı da küçülsün */
+    line-height: 1.1 !important;
+    border-radius: var(--radius-lg) !important;      /* görsel dili koru */
+    /* Arka plan ve renkler önceki kurallardan gelsin — burada değiştirmiyoruz */
+  }
+}
+</style>
+<style>
+/* === Unified Blue Header (from index) === */
+h3#globalReset{
+  display:block !important;
+  width:min(700px, 92vw) !important;
+  margin: clamp(32px, 5vh, 80px) auto 24px !important;
+  padding: 12px 16px !important;
+  border-radius: 20px !important;
+  background: #007bff !important;
+  color:#fff !important;
+  box-shadow: 0 4px 7px rgba(0,0,0,.2) !important;
+  text-align:center !important;
+  white-space: nowrap !important;        /* tek satır */
+  overflow: hidden !important;           /* taşmayı gizle */
+  text-overflow: clip !important;        /* üç noktasız kes */
+  font-family: Oswald, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(12px, 4vw, 28px) !important; /* sığacak kadar küçülsün */
+}
+/* Guard: remove any inner/wrapper transforms that might duplicate styling */
+#globalResetWrap{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+</style>
+<!-- App Icons & Manifest -->
+<link href="icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<!-- App Icons & Manifest -->
+<link href="icon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="icon/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="icon/favicon-16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="icon/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="manifest.json" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="A320 Checklist" name="apple-mobile-web-app-title"/>
+<meta content="#0f1117" name="theme-color"/>
+
+<style>
+/* subtle shake */
+@keyframes shake-kf { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+.topic-box.shake { animation: shake-kf .24s ease-in-out 0s 2; }
+</style>
+
+</head>
+<body>
+<h3 id="globalReset">A320 NORMAL CHECKLIST</h3><nav id="__hardMainNav"><a class="__tab __active" href="smart.html">VATSIM CHKL</a><a class="__tab" href="prelim.html">PRELIM CHKL</a><a class="__tab" href="normal.html">NORMAL CHKL</a></nav>
+<section aria-label="SAFETY EXTERIOR INSPECTION" class="topic-box" id="topic1">
+<h2>COCKPIT PREPARATION</h2>
+<button class="item"><p>GEAR PINS &amp; COVERS  REMOVED</p></button>
+<button class="item"><p>FUEL QUANTITY  KG</p></button>
+<button class="item"><p>SEAT BELTS  ON</p></button>
+<button class="item"><p>ADIRS  NAV</p></button>
+<button class="item"><p>T.O SPEEDS &amp; THRUST  ____(BOTH)</p></button>
+<button class="item"><p>BARO REF  (BOTH)</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="AIRCRAFT SETUP" class="topic-box" id="topic2">
+<h2>BEFORE START</h2>
+<button class="item"><p>PARKING BRAKE ____</p></button>
+<button class="item"><p>TCAS TA/RA</p></button>
+<button class="item"><p>WINDOWS/DOORS  CLOSED (BOTH)</p></button>
+<button class="item"><p>BEACON  ON</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="BATTERIES/EXTERNAL POWER" class="topic-box" id="topic3">
+<h2>AFTER START </h2>
+<button class="item"><p>ANTI ICE  ____</p></button>
+<button class="item"><p>ECAM STATUS  CHECKED</p></button>
+<button class="item"><p>PITCH TRIM  ____%</p></button>
+<button class="item"><p>RUDDER TRIM NEUTRAL</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="APU FIRE TEST/APU START" class="topic-box" id="topic4">
+<h2>TAXI</h2>
+<button class="item"><p>FLIGHT CONTROLS CHECKED(BOTH)</p></button>
+<button class="item"><p>FLIGHT INST CHECKED(BOTH)</p></button>
+<button class="item"><p>FLAPS SETTING  CONF ____(BOTH)</p></button>
+<button class="item"><p>RADAR &amp; PRED W/S  ON &amp; AUTO</p></button>
+<button class="item"><p>ENG MODE SEL ____</p></button>
+<button class="item">
+<!-- Üst satır -->
+<div class="header-line">
+<span class="l">ECAM MEMO</span>
+<span aria-hidden="true" class="dotfill"></span>
+<span class="r">TO NO BLUE</span>
+</div>
+<!-- Alt maddeler -->
+<ul class="sub-list">
+<li> AUTO BRK MAX</li>
+<li> SEAT BELTS ON</li>
+<li> CABIN READY</li>
+<li> SPLRS ARM</li>
+<li> FLAPS T.O</li>
+<li> T.O CONFIG NORMAL</li>
+</ul>
+</button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="ADIRS" class="topic-box" id="topic5">
+<h2>LINE-UP </h2>
+<button class="item"><p>T.O RWY ____(BOTH)</p></button>
+<button class="item"><p>CABIN CREW  ADVISED</p></button>
+<button class="item"><p>PACKS 1 &amp; 2 ____</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="COCKPIT LIGHTS" class="topic-box" id="topic6">
+<h2>DEPARTURE CHANGE</h2>
+<button class="item"><p>RWY &amp; SID &amp; NADP ____</p></button>
+<button class="item"><p>FLAPS SETTING  CONF ____ (BOTH)</p></button>
+<button class="item"><p>T.O SPEEDS &amp; THRUST ____(BOTH)</p></button>
+<button class="item"><p>FCU ALT ____</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="EFB INITIALIZATION" class="topic-box" id="topic7">
+<h2>APPROACH</h2>
+<button class="item"><p>BARO REF ____(BOTH)</p></button>
+<button class="item"><p>SEAT BELTS  ON</p></button>
+<button class="item"><p>MINIMUM ____</p></button>
+<button class="item"><p>AUTO BRAKE ____</p></button>
+<button class="item"><p>ENG MODE SEL ____</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="EFB INITIALIZATION" class="topic-box" id="topic8">
+<h2>LANDING</h2>
+<button class="item"><p>CABIN CREW  ADVISED</p></button>
+<button class="item">
+<!-- Üst satır -->
+<div class="header-line">
+<span class="l">ECAM MEMO</span>
+<span aria-hidden="true" class="dotfill"></span>
+<span class="r">LDG NO BLUE</span>
+</div>
+<!-- Alt maddeler -->
+<ul class="sub-list">
+<li>LDG GEAR DN</li>
+<li>SEAT BELTS  ON</li>
+<li>CABIN READY</li>
+<li>SPLRS ARM</li>
+<li> FLAPS FULL or CONF 3</li>
+</ul>
+</button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="BEFORE WALKAROUND" class="topic-box" id="topic9">
+<h2>AFTER LANDING</h2>
+<button class="item"><p>RADAR &amp; PRED W/S OFF</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="SECURING THE AIRCRAFT" class="topic-box" id="topic10">
+<h2>PARKING</h2>
+<button class="item"><p>PARK BRK OR CHOCKS SET</p></button>
+<button class="item"><p>ENGINES OFF</p></button>
+<button class="item"><p>WING LIGHTS OFF</p></button>
+<button class="item"><p>FUEL PUMPS OFF</p></button>
+<button class="item"><p>YELLOW ELEC PUMP OFF</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<section aria-label="SECURING THE AIRCRAFT" class="topic-box" id="topic11">
+<h2>SECURING THE AIRCRAFT</h2>
+<button class="item"><p>PARKING BRAKE  SET</p></button>
+<button class="item"><p>ADIRS  OFF</p></button>
+<button class="item"><p>OXYGEN OFF</p></button>
+<button class="item"><p>EMER EXIT LT OFF</p></button>
+<button class="item"><p>EFBs  OFF (BOTH)</p></button>
+<button class="item"><p>APU AND BATTERIES OFF</p></button>
+<button class="reset" data-reset="">Reset</button>
+</section>
+<script>
+    // Ortası noktalı hizalama: metinde 4+ nokta/boşluk varsa ondan böl,
+    // yoksa son kelimeyi sağa at (yedek plan).
+    function buildLeaders() {
+  document.querySelectorAll('.item p').forEach(p => {
+    const raw = p.textContent.replace(/\s+/g, ' ').trim(); // iç boşlukları normalize et
+    let left = "", right = "";
+
+    // 1) Kullanıcının manuel ayracı: EN AZ iki boşluk
+    // (orijinal metinde özellikle iki boşluk bıraktığını varsayarak)
+    const manual = p.textContent.match(/^(.*?)\s{2,}(.*)$/);
+    if (manual) {
+      left  = manual[1].trim();
+      right = manual[2].trim();
+    } else {
+      // 2) Noktalı/çok boşluklu ayraç (eski davranış)
+      const m = raw.match(/^(.*?)[.\s]{4,}(.*)$/);
+      if (m) {
+        left  = m[1].trim();
+        right = m[2].trim();
+      } else {
+        // 3) Yedek: son kelimeyi sağa at
+        const parts = raw.split(' ');
+        right = parts.pop();
+        left  = parts.join(' ');
+      }
+    }
+
+    p.innerHTML = `
+      <span class="l">${left}</span>
+      <span class="dotfill" aria-hidden="true"></span>
+      <span class="r">${right}</span>
+    `;
+  });
+}
+
+    // Bölüm tamamlama kontrolü
+    function checkCompletion(topicEl){
+      const items = topicEl.querySelectorAll('.item');
+      const hidden = topicEl.querySelectorAll('.item.hidden');
+      topicEl.classList.toggle('completed', items.length === hidden.length);
+    }
+
+    // Event delegation: tek bir dinleyiciyle tüm butonlar
+    document.addEventListener('click', (e) => {
+      const itemBtn = e.target.closest('.item');
+      const resetBtn = e.target.closest('[data-reset]');
+      if (itemBtn) {
+        itemBtn.classList.add('hidden');
+        checkCompletion(itemBtn.closest('.topic-box'));
+      } else if (resetBtn) {
+        const topic = resetBtn.closest('.topic-box');
+        topic.querySelectorAll('.item').forEach(b => b.classList.remove('hidden'));
+        topic.classList.remove('completed');
+      }
+    });
+
+    // İlk yüklemede liderleri kur
+    buildLeaders();
+	
+	// En üst başlığa tıklayınca tüm maddeleri resetle
+document.getElementById('globalReset').addEventListener('click', () => {
+  document.querySelectorAll('.item').forEach(item => item.classList.remove('hidden'));
+  document.querySelectorAll('.topic-box').forEach(topic => topic.classList.remove('completed'));
+});
+  </script>
+
+<!-- GPT-GLOBAL-RESET-SELECT -->
+<style>
+.item.selected{}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const items = Array.from(document.querySelectorAll('.item'));
+  if (!items.length) return;
+
+  // Ensure focusable items
+  items.forEach(el => { if (el.tabIndex < 0) el.tabIndex = 0; });
+
+  function clearSelected(){ items.forEach(i => i.classList.remove('selected')); }
+  
+function selectIndex(i){
+  if (i < 0 || i >= items.length) return;
+  clearSelected();
+  items[i].classList.add('selected');
+  try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+  if (typeof __centerSelected === 'function') __centerSelected(items[i]);
+}
+
+  function selectFirst(){ selectIndex(0); }
+
+  // Initial ensure first selected
+  if (!items.some(i => i.classList.contains('selected'))) selectFirst();
+
+  // Space: prevent scroll, click selected, then select next
+  document.addEventListener('keydown', function(e){
+    if (e.code === 'Space' && !e.repeat) {
+      const ae = document.activeElement;
+      const tag = (ae && ae.tagName) || '';
+      const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+      if (!isEditable) {
+        e.preventDefault();
+        let idx = items.findIndex(i => i.classList.contains('selected'));
+        if (idx < 0) { selectFirst(); return; }
+        // trigger actual click
+        items[idx].click();
+        // move to next
+        if (idx + 1 < items.length) selectIndex(idx + 1);
+      }
+    }
+  });
+
+  // Mouse click: select clicked, then focus next
+  items.forEach((item, idx) => {
+    item.addEventListener('click', function(){
+      selectIndex(idx);
+      if (idx + 1 < items.length) items[idx + 1].focus();
+    });
+  });
+
+  // After global or section reset, always select VERY FIRST item on the page
+  function afterResetSelectFirst(){
+    // let built-in reset finish (it may add/remove classes)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const firstItem = document.querySelector('.item');
+        if (firstItem) {
+          // re-sync items array with DOM (in case structure changed)
+          clearSelected();
+          firstItem.classList.add('selected');
+          if (firstItem.tabIndex < 0) firstItem.tabIndex = 0;
+          firstItem.focus({ preventScroll: true });
+        }
+      });
+    });
+  }
+
+  const globalReset = document.getElementById('globalReset');
+  if (globalReset) globalReset.addEventListener('click', afterResetSelectFirst);
+  document.querySelectorAll('.reset').forEach(btn => btn.addEventListener('click', afterResetSelectFirst));
+});
+</script>
+
+<script>
+// Seçili maddeyi ekranda ortala ve kısa süreli vurgula
+function __centerSelected(el){
+  if (!el) return;
+  try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_) { el.scrollIntoView(true); }
+  try {
+    el.classList.add('autoscroll-highlight');
+    setTimeout(()=> el.classList.remove('autoscroll-highlight'), 500);
+  } catch(_){}
+}
+</script>
+
+
+
+
+
+
+<script>
+// Space tuşu: input alanlarında değilsek sayfa kaymasını tamamen engelle
+// ve seçili/odaklı maddeyi tıkla + bir sonrakine geç + ortala
+document.addEventListener('keydown', function(e){
+  if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName) || '';
+    const isEditable = ae && (ae.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+    if (isEditable) return;
+
+    // Her durumda sayfa kaymasını durdur
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Öncelik: odaktaki .item, yoksa .item.selected, o da yoksa ilk .item
+    let curr = (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item.selected') || document.querySelector('.item');
+    if (!curr) return;
+
+    // Mevcut maddeyi "tıkla"
+    if (typeof curr.click === 'function') curr.click();
+
+    // Aynı topic içinde bir sonrakine odaklan
+    const topic = curr.closest('.topic-box') || document;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    const idx = items.indexOf(curr);
+    const next = (idx >= 0 && idx + 1 < items.length) ? items[idx + 1] : curr;
+
+    // Odak ve ortalama (sayfa kaydırmasını biz kontrol ediyoruz)
+    try { next.focus({ preventScroll: true }); } catch(_){ next.focus(); }
+    setTimeout(function(){
+      const sel = document.querySelector('.item.selected') || next;
+      if (typeof __centerSelected === 'function') __centerSelected(sel);
+    }, 30);
+  }
+});
+</script>
+
+
+<script>
+// === Smart Space Handler (capture-phase) ===
+// Kaynak davranış: smart.html (Space -> tıkla, sonraki maddeye odaklan, ortala)
+// Not: input/textarea/select içinde değilsek varsayılan kaydırmayı iptal eder.
+(function(){
+  function isEditable(ae){
+    if(!ae) return false;
+    const tag = (ae.tagName||'').toUpperCase();
+    return ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT';
+  }
+  
+  function focusNextWithinTopic(curr){
+    // Aday filtresi: gizli/done olmayan
+    function isCandidate(el){
+      return el && !el.classList.contains('hidden') && !el.classList.contains('done');
+    }
+    // Önce mevcut topic içinde sonraki uygunu ara
+    const topic = curr && curr.closest ? curr.closest('.topic-box') : null;
+    if (topic){
+      const items = Array.from(topic.querySelectorAll('.item'));
+      const idx = items.indexOf(curr);
+      for (let i = idx + 1; i < items.length; i++){
+        if (isCandidate(items[i])){
+          try { items[i].focus({preventScroll:true}); } catch(_){ items[i].focus(); }
+          // seçimi görsel olarak taşı
+          document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+          items[i].classList.add('selected');
+          if (typeof __centerSelected === 'function'){
+            setTimeout(()=>__centerSelected(items[i]), 30);
+          }
+          return;
+        }
+      }
+    }
+    // Mevcut topic bitti: sıradaki topic-box içinde ilk uyguna geç
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const tIdx = topic ? topics.indexOf(topic) : -1;
+    for (let t = tIdx + 1; t < topics.length; t++){
+      const cand = Array.from(topics[t].querySelectorAll('.item')).find(isCandidate);
+      if (cand){
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        if (typeof __centerSelected === 'function'){
+          setTimeout(()=>__centerSelected(cand), 30);
+        }
+        return;
+      }
+    }
+    // Hiç aday kalmadıysa: mevcut/ilk elemana geri dön
+    const fallback = document.querySelector('.item') || curr;
+    if (fallback){
+      try { fallback.focus({preventScroll:true}); } catch(_){ fallback.focus(); }
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      fallback.classList.add('selected');
+      if (typeof __centerSelected === 'function'){
+        setTimeout(()=>__centerSelected(fallback), 30);
+      }
+    }
+  }
+); } catch(_) { next && next.focus && next.focus(); }
+    if (typeof __centerSelected === 'function'){
+      setTimeout(function(){
+        const sel = document.querySelector('.item.selected') || next;
+        __centerSelected(sel);
+      }, 30);
+    }
+  }
+  // Tüm .item elemanlarını odaklanabilir yap
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.item').forEach(function(el){
+      if (el.tabIndex < 0) el.tabIndex = 0;
+    });
+    // İlk maddeyi göster & ortala (smart davranışı)
+    var first = document.querySelector('.item');
+    if (first){
+      try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(first);
+    }
+  });
+
+  // Capture-phase: diğer dinleyicilerden önce çalışsın
+  document.addEventListener('keydown', function(e){
+    if ((e.key === ' ' || e.code === 'Space') && !e.repeat){
+      var ae = document.activeElement;
+      if (isEditable(ae)) return;
+
+      // Varsayılan sayfa kaydırmayı tamamen durdur
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+      // Öncelik: odaktaki .item -> seçili .item -> ilk .item
+      var curr = (ae && ae.closest && ae.closest('.item')) ||
+                 document.querySelector('.item.selected') ||
+                 document.querySelector('.item');
+      if (!curr) return;
+
+      // "Tıkla" (toggle/select mantığını mevcut koda bırak)
+      if (typeof curr.click === 'function') curr.click();
+
+      // Aynı topic içinde bir sonrakine odaklan ve ortala
+      focusNextWithinTopic(curr);
+      /* HOOK: call completion check after space */
+      try { __checkTopicCompletionAndAdvance(curr.closest('.topic-box')); } catch(_) {}
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+// === Bölüm Tamamlandığında Sonrakine Geç ===
+(function(){
+  function allDone(topic){
+    const items = Array.from(topic.querySelectorAll('.item'));
+    return items.length>0 && items.every(el => el.classList.contains('done'));
+  }
+  function focusFirstOfNext(topic){
+    let next = topic.nextElementSibling;
+    while(next){
+      if (next.classList && next.classList.contains('topic-box')){
+        const first = next.querySelector('.item');
+        if (first){
+          try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+          if (typeof __centerSelected === 'function') __centerSelected(first);
+          break;
+        }
+      }
+      next = next.nextElementSibling;
+    }
+  }
+  document.addEventListener('click', function(e){
+    const item = e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    // Küçük gecikmeyle kontrol et (class 'done' eklendikten sonra)
+    setTimeout(function(){
+      if (allDone(topic)) focusFirstOfNext(topic);
+    }, 40);
+  });
+})();
+</script>
+
+
+<script>
+// Bölüm tamamlanınca otomatik olarak sonraki bölümün ilk maddesini seç
+
+
+function __checkTopicCompletionAndAdvance(topic){
+  if (!topic) return;
+  const items = Array.from(topic.querySelectorAll('.item'));
+  const hidden = items.filter(i => i.classList.contains('hidden'));
+  const allHidden = (items.length > 0 && hidden.length === items.length) || topic.classList.contains('completed');
+  if (allHidden){
+    // Find the next .topic-box
+    let nextTopic = topic.nextElementSibling;
+    while (nextTopic && !(nextTopic.classList && nextTopic.classList.contains('topic-box'))) {
+      nextTopic = nextTopic.nextElementSibling;
+    }
+    if (nextTopic){
+      // First item of the next topic, regardless of hidden/done
+      const cand = nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+if (nextTopic){
+      // First available (not hidden) item
+      const cand = Array.from(nextTopic.querySelectorAll('.item')).find(el => !el.classList.contains('hidden') && !el.classList.contains('done')) || nextTopic.querySelector('.item');
+      if (cand){
+        document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+        cand.classList.add('selected');
+        try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+        if (typeof __centerSelected==='function') __centerSelected(cand);
+      }
+    }
+  }
+}
+ kontrol et
+document.addEventListener('click', function(e){
+  const item = e.target.closest && e.target.closest('.item');
+  if (item){
+    const topic = item.closest('.topic-box');
+    setTimeout(()=>__checkTopicCompletionAndAdvance(topic), 50);
+  }
+});
+</script>
+
+
+<script>
+// Ensure first item selected on load
+document.addEventListener('DOMContentLoaded', function(){
+  var first = document.querySelector('.item');
+  if (first){
+    document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected==='function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- İlk açılışta: en üstteki *görünür* maddeyi seçili getir ---
+document.addEventListener('DOMContentLoaded', function(){
+  // Tüm .item'leri odaklanabilir yap
+  document.querySelectorAll('.item').forEach(function(el){
+    if (el.tabIndex < 0) el.tabIndex = 0;
+  });
+  // Seçimleri temizle
+  document.querySelectorAll('.item.selected').forEach(function(el){
+    el.classList.remove('selected');
+  });
+  // İlk görünür madde (.hidden olmayan) -> yoksa ilk .item
+  var first = document.querySelector('.topic-box .item:not(.hidden)') || document.querySelector('.item');
+  if (first){
+    first.classList.add('selected');
+    try { first.focus({preventScroll:true}); } catch(_){ first.focus(); }
+    if (typeof __centerSelected === 'function') __centerSelected(first);
+  }
+});
+</script>
+
+
+<script>
+// --- Bölüm tamamlanınca bir sonrakine otomatik geçiş (sağlam gözlemci) ---
+(function(){
+  function isTopicCompleted(topic){
+    if (!topic) return false;
+    const items = Array.from(topic.querySelectorAll('.item'));
+    if (!items.length) return false;
+    const hiddenCount = items.filter(i => i.classList.contains('hidden')).length;
+    return hiddenCount === items.length || topic.classList.contains('completed');
+  }
+  function firstCandidateIn(topic){
+    if (!topic) return null;
+    return Array.from(topic.querySelectorAll('.item')).find(i => !i.classList.contains('hidden') && !i.classList.contains('done')) || topic.querySelector('.item');
+  }
+  function advanceToNextTopic(fromTopic){
+    if (!fromTopic) return;
+    let next = fromTopic.nextElementSibling;
+    while (next && !(next.classList && next.classList.contains('topic-box'))) next = next.nextElementSibling;
+    const cand = firstCandidateIn(next);
+    if (cand){
+      document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected'));
+      cand.classList.add('selected');
+      try { cand.focus({preventScroll:true}); } catch(_){ cand.focus(); }
+      if (typeof __centerSelected === 'function') __centerSelected(cand);
+    }
+  }
+  // Click sonrası küçük gecikmeyle kontrol
+  document.addEventListener('click', function(e){
+    const item = e.target.closest && e.target.closest('.item');
+    if (!item) return;
+    const topic = item.closest('.topic-box');
+    if (!topic) return;
+    setTimeout(function(){
+      if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+    }, 40);
+  }, true);
+  // Her topic için gözlemci: .item class değişimlerini ve topic.class değişimini izle
+  function attachObserver(topic){
+    try{
+      const obs = new MutationObserver(function(){
+        if (isTopicCompleted(topic)) advanceToNextTopic(topic);
+      });
+      obs.observe(topic, {attributes:true, attributeFilter:['class'], subtree:true});
+    }catch(_){}
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.topic-box').forEach(attachObserver);
+  });
+})();
+</script>
+
+
+<script>
+// === Helper: find first UNDONE item before given topic ===
+function __findFirstUndoneBeforeTopic(currTopic){
+  try{
+    const topics = Array.from(document.querySelectorAll('.topic-box'));
+    const idx = topics.indexOf(currTopic);
+    if (idx <= 0) return null;
+    for (let t = 0; t < idx; t++){
+      const items = Array.from(topics[t].querySelectorAll('.item'));
+      for (const it of items){
+        if (!it.classList.contains('hidden') && !it.classList.contains('done')){
+          return { topic: topics[t], item: it };
+        }
+      }
+    }
+  }catch(_){}
+  return null;
+}
+</script>
+
+<script>
+// === Cross-topic click guard (capture-phase) ===
+(function(){
+  document.addEventListener('click', function(ev){
+    const item = ev.target && ev.target.closest ? ev.target.closest('.item') : null;
+    if (!item) return;
+    const topic = item.closest && item.closest('.topic-box');
+    if (!topic) return;
+
+    const miss = __findFirstUndoneBeforeTopic(topic);
+    if (miss){
+      ev.preventDefault(); ev.stopPropagation();
+      try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+      try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item.focus && miss.item.focus(); }
+      try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+      if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+    }
+  }, true);
+})();
+</script>
+
+<script>
+// === Space key guard (capture-phase) ===
+// Blocks forward movement when earlier topics contain undone items, before any other handlers run.
+(function(){
+  document.addEventListener('keydown', function(e){
+    if (e.repeat) return;
+    // normalize space detection and ignore when typing in inputs/textareas/selects
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName || '').toUpperCase();
+    const editable = ae && (ae.isContentEditable || tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT');
+    if (editable) return;
+
+    if (e.key === ' ' || e.code === 'Space'){
+      // determine current topic from selected or focused item
+      const curr = document.querySelector('.item.selected') || (ae && ae.closest && ae.closest('.item')) || document.querySelector('.item');
+      const currTopic = curr && curr.closest ? curr.closest('.topic-box') : null;
+      const miss = __findFirstUndoneBeforeTopic(currTopic);
+      if (miss){
+        e.preventDefault(); e.stopPropagation();
+        try { miss.topic.classList.add('shake'); setTimeout(()=>miss.topic.classList.remove('shake'), 500); } catch(_){}
+        try { miss.item.focus({preventScroll:true}); } catch(_){ miss.item && miss.item.focus && miss.item.focus(); }
+        try { miss.item.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+        try { document.querySelectorAll('.item.selected').forEach(el=>el.classList.remove('selected')); miss.item.classList.add('selected'); } catch(_){}
+        if (navigator && navigator.vibrate) { try{ navigator.vibrate(120); }catch(_){} }
+      }
+    }
+  }, true);
+})();
+</script>
+
+</body>
+</html>
