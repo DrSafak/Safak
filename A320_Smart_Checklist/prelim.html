@@ -1381,6 +1381,22 @@ function __findFirstUndoneBeforeTopic(currTopic){
   }, true);
 })();
 </script>
-
+<script>
+// ... mevcut script kodları ...
+(function() {
+  const handleMarginTap = function(e) {
+    const isBlank = (e.target === document.body || e.target === document.documentElement || e.target.classList.contains('topic-box'));
+    if (isBlank) {
+      const targetItem = document.querySelector('.item.selected') || (document.activeElement && document.activeElement.closest('.item'));
+      if (targetItem) {
+        e.preventDefault();
+        targetItem.click();
+      }
+    }
+  };
+  window.addEventListener('mousedown', handleMarginTap);
+  window.addEventListener('touchstart', handleMarginTap, { passive: false });
+})();
+</script>
 </body>
 </html>
