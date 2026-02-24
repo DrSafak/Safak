@@ -3415,4 +3415,31 @@ function __findFirstUndoneBeforeTopic(currTopic){
   }, true);
 })();
 </script>
-</body></html>
+<script>
+(function() {
+  // Ekranın yanlarındaki veya aralardaki boş alanlara tıklamayı yakala
+  const handleBlankAreaClick = function(e) {
+    // Tıklanan yer tam olarak arka plan (body/html) veya kutuların dış boşluğu mu?
+    const isBlank = (e.target === document.body || e.target === document.documentElement || e.target.classList.contains('topic-box'));
+    
+    if (isBlank) {
+      // Şu an mavi çerçeve ile odaklanmış (focus) olan maddeyi bul
+      const currentActive = document.activeElement;
+      
+      // Eğer odaklanmış bir madde varsa ve bu bir checklist maddesiyse (.item)
+      if (currentActive && currentActive.classList.contains('item')) {
+        // iOS'ta focus'un kaybolmasını engellemek için varsayılanı durdur
+        e.preventDefault();
+        // Maddeye tıklama işlemini gerçekleştir
+        currentActive.click();
+      }
+    }
+  };
+
+  // Hem mouse hem dokunmatik ekranlar için dinleyicileri ekle
+  window.addEventListener('mousedown', handleBlankAreaClick);
+  window.addEventListener('touchstart', handleBlankAreaClick, { passive: false });
+})();
+</script>
+</body>
+</html>
